@@ -1,0 +1,38 @@
+# Redirect apex to www
+server {
+    server_name strata.properties;
+    listen 80; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.strata.properties/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.strata.properties/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    return 301 https://www.strata.properties$request_uri;
+}
+
+# Redirect http www to https
+server {
+    server_name www.strata.properties;
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+# Serve www.strata.properties over https
+server {
+    server_name www.strata.properties;
+    listen 443;
+    ssl_certificate /etc/letsencrypt/live/www.strata.properties/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.strata.properties/privkey.pem; # managed by Certbot
+
+    access_log /var/log/nginx/strataapp-access.log;
+    error_log /var/log/nginx/strataapp-error.log;
+
+    root /home/john/strataapp/src/;
+    index index.html;
+
+    location ~ \.git/ { deny all; return 404; }
+    location / {
+    	autoindex on;
+    	types { text/html html; application/pdf; }
+    }
+}
