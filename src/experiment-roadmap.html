@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strata App — Experiment Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181a23;
+    --surface-2: #1f2230;
+    --surface-3: #252838;
+    --border: #2a2d3a;
+    --border-light: #343849;
+    --text: #e2e4ed;
+    --text-dim: #8b8fa7;
+    --text-muted: #5c6077;
+    --accent: #6c9cfc;
+    --accent-dim: #3a5a9e;
+    --green: #5dd9a3;
+    --green-dim: rgba(93,217,163,0.10);
+    --green-border: rgba(93,217,163,0.25);
+    --amber: #f0b456;
+    --amber-dim: rgba(240,180,86,0.10);
+    --amber-border: rgba(240,180,86,0.25);
+    --red: #f06c6c;
+    --red-dim: rgba(240,108,108,0.08);
+    --red-border: rgba(240,108,108,0.22);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.10);
+    --purple-border: rgba(167,139,250,0.25);
+    --cyan: #67d4e8;
+    --cyan-dim: rgba(103,212,232,0.10);
+    --cyan-border: rgba(103,212,232,0.25);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 40px 32px 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .header-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 700px;
+    line-height: 1.7;
+  }
+  .header-contrast {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    font-size: 13px;
+  }
+  @media (max-width: 600px) { .header-contrast { grid-template-columns: 1fr; } }
+  .contrast-col-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .contrast-col-title.old { color: var(--red); }
+  .contrast-col-title.new { color: var(--green); }
+  .contrast-item {
+    color: var(--text-dim);
+    padding: 3px 0;
+    line-height: 1.5;
+  }
+
+  .timeline-bar {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+  }
+  .tl-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .tl-track {
+    display: flex;
+    border-radius: 6px;
+    overflow: hidden;
+    height: 36px;
+    border: 1px solid var(--border);
+  }
+  .tl-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    padding: 0 8px;
+  }
+  .tl-s0 { background: rgba(108,156,252,0.15); color: var(--accent); flex: 3; }
+  .tl-s1 { background: rgba(93,217,163,0.12); color: var(--green); flex: 5; border-left: 1px solid var(--border); }
+  .tl-s2 { background: rgba(240,180,86,0.12); color: var(--amber); flex: 2; border-left: 1px solid var(--border); }
+  .tl-s3 { background: rgba(167,139,250,0.10); color: var(--purple); flex: 6; border-left: 1px solid var(--border); }
+  .tl-s4 { background: rgba(103,212,232,0.10); color: var(--cyan); flex: 4; border-left: 1px solid var(--border); }
+  .tl-labels {
+    display: flex;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .tl-label { text-align: center; }
+  .tl-l0 { flex: 3; }
+  .tl-l1 { flex: 5; }
+  .tl-l2 { flex: 2; }
+  .tl-l3 { flex: 6; }
+  .tl-l4 { flex: 4; }
+
+  /* gates between segments */
+  .tl-gate-row {
+    display: flex;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .tl-gate-spacer { flex: 3; }
+  .tl-gate-marker {
+    width: 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+  .tl-gate-marker span {
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+    padding: 1px 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+
+  .experiments {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .experiment {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .exp-header {
+    padding: 20px 24px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .exp-header:hover { background: var(--surface-2); }
+
+  .exp-top-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .exp-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .exp-weeks {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .exp-chevron {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .experiment.open .exp-chevron { transform: rotate(90deg); }
+
+  .exp-hypothesis {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+  .exp-hypothesis em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .exp-desc {
+    color: var(--text-dim);
+    font-size: 14px;
+    max-width: 640px;
+    line-height: 1.6;
+  }
+
+  .exp-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .experiment.open .exp-body { display: block; }
+
+  .exp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 700px) { .exp-grid { grid-template-columns: 1fr; } }
+
+  .exp-panel {
+    padding: 20px 24px;
+  }
+  .exp-panel + .exp-panel {
+    border-left: 1px solid var(--border);
+  }
+  @media (max-width: 700px) {
+    .exp-panel + .exp-panel { border-left: none; border-top: 1px solid var(--border); }
+  }
+
+  .exp-panel-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .exp-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-list li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .exp-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .exp-gate {
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 700px) { .exp-gate { grid-template-columns: 1fr; } }
+
+  .gate-box {
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .gate-pass {
+    background: var(--green-dim);
+    border: 1px solid var(--green-border);
+    color: var(--green);
+  }
+  .gate-fail {
+    background: var(--red-dim);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+  }
+  .gate-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+
+  .kill-criteria {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .kill-banner {
+    background: var(--red-dim);
+    border: 1px solid var(--red-border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 40px;
+  }
+  .kill-banner-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  .kill-banner p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 700px;
+  }
+  .kill-list {
+    list-style: none;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .kill-list li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .kill-list li::before {
+    content: '✕';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 11px;
+    top: 2px;
+  }
+
+  .principles {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 32px 64px;
+  }
+  .principles-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .principle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 640px) { .principle-grid { grid-template-columns: 1fr; } }
+  .principle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .principle-name {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .principle-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Experiment Roadmap</div>
+  <h1>Strata Self-Management App</h1>
+  <p>You're not building a startup. You're running a sequence of experiments, each designed to test a specific hypothesis. Each experiment has a pass/fail gate. You only proceed to the next experiment if the current one passes.</p>
+
+  <div class="header-contrast">
+    <div>
+      <div class="contrast-col-title old">Build-plan mindset</div>
+      <div class="contrast-item">Phases defined by features to ship</div>
+      <div class="contrast-item">Success = code is deployed</div>
+      <div class="contrast-item">Sequence is fixed regardless of outcomes</div>
+      <div class="contrast-item">Failure isn't defined — you just keep building</div>
+    </div>
+    <div>
+      <div class="contrast-col-title new">Experiment mindset</div>
+      <div class="contrast-item">Phases defined by questions to answer</div>
+      <div class="contrast-item">Success = hypothesis is validated or invalidated</div>
+      <div class="contrast-item">Each gate decides whether to proceed, pivot, or stop</div>
+      <div class="contrast-item">Failure is a legitimate, valuable outcome</div>
+    </div>
+  </div>
+</div>
+
+<div class="timeline-bar">
+  <div class="tl-title">20-Week Timeline · Decision Gates Between Each Experiment</div>
+  <div class="tl-track">
+    <div class="tl-segment tl-s0">Wk 1–3</div>
+    <div class="tl-segment tl-s1">Wk 3–8</div>
+    <div class="tl-segment tl-s2">Wk 8–10</div>
+    <div class="tl-segment tl-s3">Wk 10–16</div>
+    <div class="tl-segment tl-s4">Wk 16–20</div>
+  </div>
+  <div class="tl-labels">
+    <div class="tl-label tl-l0">EXP 0</div>
+    <div class="tl-label tl-l1">EXP 1</div>
+    <div class="tl-label tl-l2">EXP 2</div>
+    <div class="tl-label tl-l3">EXP 3</div>
+    <div class="tl-label tl-l4">EXP 4</div>
+  </div>
+</div>
+
+<div class="experiments">
+
+  <!-- ═══ EXP 0 ═══ -->
+  <div class="experiment open" onclick="this.classList.toggle('open')">
+    <div class="exp-header">
+      <div class="exp-top-row">
+        <span class="exp-number">Experiment 0</span>
+        <span class="exp-weeks">Weeks 1–3</span>
+        <span class="exp-chevron">›</span>
+      </div>
+      <div class="exp-hypothesis">"I can ship a working multi-tenant web app <em>in three weeks</em> with my chosen stack."</div>
+      <div class="exp-desc">This tests you, not the market. Can you, as a solo developer with Claude Code, actually deliver at this pace? If this takes six weeks, the entire roadmap is wrong and needs re-scoping.</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-grid">
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you build</div>
+          <ul class="exp-list">
+            <li>Framework, database, ORM, deployment pipeline</li>
+            <li>Auth via managed service (Clerk, Supabase Auth, Auth.js)</li>
+            <li>Multi-tenant data model: buildings, users, issues, activity entries, contacts, issue links</li>
+            <li>A single screen: list of issues for one building</li>
+            <li>Deployed and accessible at a real URL</li>
+          </ul>
+        </div>
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you learn</div>
+          <ul class="exp-list">
+            <li>Your actual velocity with this stack + Claude Code</li>
+            <li>Whether the data model feels right when you try to enter your real building's issues</li>
+            <li>Deployment friction — is the infra simple enough to not slow you down?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-gate">
+        <div class="gate-box gate-pass">
+          <div class="gate-label">Pass → proceed</div>
+          App is deployed. You can create issues and see them in a list. It took ≤ 3 weeks. Move to Experiment 1.
+        </div>
+        <div class="gate-box gate-fail">
+          <div class="gate-label">Fail → adjust</div>
+          Took more than 3 weeks. Reassess: is the stack too complex? Are you over-engineering? Simplify and re-attempt before continuing. Do not proceed to Exp 1 with broken velocity.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXP 1 ═══ -->
+  <div class="experiment" onclick="this.classList.toggle('open')">
+    <div class="exp-header">
+      <div class="exp-top-row">
+        <span class="exp-number">Experiment 1</span>
+        <span class="exp-weeks">Weeks 3–8</span>
+        <span class="exp-chevron">›</span>
+      </div>
+      <div class="exp-hypothesis">"A shared issue tracker with an activity log <em>replaces my current workflow</em> as committee chair."</div>
+      <div class="exp-desc">The product hypothesis. Is the core concept — issues with chronological activity feeds, attached documents, tagged contacts — actually better than what you do now (email threads, spreadsheets, memory)?</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-grid">
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you build</div>
+          <ul class="exp-list">
+            <li>Issue detail view with full activity feed</li>
+            <li>Activity entries: free text, status changes, file attachments, contact tags</li>
+            <li>Issue statuses: open, waiting on us, waiting on external, resolved, closed</li>
+            <li>Issue linking (many-to-many with optional labels)</li>
+            <li>Inline financial metadata on quotes/invoices (amount, supplier, status)</li>
+            <li>Contacts created on-the-fly when tagging activity entries</li>
+            <li>File storage via S3-compatible service</li>
+          </ul>
+        </div>
+        <div class="exp-panel">
+          <div class="exp-panel-title">How you test it</div>
+          <ul class="exp-list">
+            <li>Enter every open issue in your building — fire order, maintenance items, everything</li>
+            <li>Use it as your primary tracking tool for 2+ weeks. Stop using your spreadsheet/email.</li>
+            <li>Log every phone call, email, and meeting as an activity entry</li>
+            <li>Attach real documents — quotes, variations, EGM minutes</li>
+            <li>At the end of 2 weeks, ask: can I brief the committee from this tool alone?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-gate">
+        <div class="gate-box gate-pass">
+          <div class="gate-label">Pass → proceed</div>
+          You stopped using your old system. You can prepare for a committee meeting entirely from the app. You find yourself checking it instead of searching email. Move to Experiment 2.
+        </div>
+        <div class="gate-box gate-fail">
+          <div class="gate-label">Fail → pivot or stop</div>
+          You keep reverting to email/spreadsheets because the app is missing something critical or adds friction. Identify what's missing. If it's a fixable feature gap, fix it and re-test. If the core concept doesn't feel right — if logging activity is busywork that doesn't pay off — reconsider the product thesis before showing it to anyone else.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXP 2 ═══ -->
+  <div class="experiment" onclick="this.classList.toggle('open')">
+    <div class="exp-header">
+      <div class="exp-top-row">
+        <span class="exp-number">Experiment 2</span>
+        <span class="exp-weeks">Weeks 8–10</span>
+        <span class="exp-chevron">›</span>
+      </div>
+      <div class="exp-hypothesis">"Another committee chair will <em>use this and pay for it</em> without me standing over them."</div>
+      <div class="exp-desc">The market hypothesis. Your own usage proves the concept works for you. This tests whether someone else — with different issues, a different building, a different tolerance for new tools — will adopt it and value it enough to pay.</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-grid">
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you build</div>
+          <ul class="exp-list">
+            <li>Multi-user access: chair invites committee members by email</li>
+            <li>Role-based permissions: chair (full control), committee (comment, upload)</li>
+            <li>Email notifications on issue updates and comments</li>
+            <li>Stripe integration — one subscription tier, per building, per month</li>
+          </ul>
+        </div>
+        <div class="exp-panel">
+          <div class="exp-panel-title">How you test it</div>
+          <ul class="exp-list">
+            <li>Find 2–3 committee chairs from strata communities (Flat Chat, Facebook groups, personal network)</li>
+            <li>Set them up manually — create building, import their issues, walk them through it on a call</li>
+            <li>Charge them. Even $10/month. Price is not the test — willingness to pay is.</li>
+            <li>Check in weekly. Watch for: do they log in unprompted? Do they add entries without being asked?</li>
+            <li>Track the drop-off: how many sessions before they stop? What feature did they need that didn't exist?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-gate">
+        <div class="gate-box gate-pass">
+          <div class="gate-label">Pass → proceed</div>
+          At least 1 of 3 test buildings is actively using the app after 2 weeks, has entered their own issues, and paid (or is willing to). They say something like "where has this been?" or "I showed it to my committee." Move to Experiment 3.
+        </div>
+        <div class="gate-box gate-fail">
+          <div class="gate-label">Fail → diagnose</div>
+          Nobody sticks after the onboarding call. Diagnose why: is the UX too rough? Is the concept wrong for them? Are they the wrong audience (maybe it's not chairs, it's strata managers)? Did they want something different (maintenance reporting, not issue tracking)? This is the most valuable failure — it tells you whether to iterate or pivot.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXP 3 ═══ -->
+  <div class="experiment" onclick="this.classList.toggle('open')">
+    <div class="exp-header">
+      <div class="exp-top-row">
+        <span class="exp-number">Experiment 3</span>
+        <span class="exp-weeks">Weeks 10–16</span>
+        <span class="exp-chevron">›</span>
+      </div>
+      <div class="exp-hypothesis">"The features my early users ask for are <em>things I can build</em>, not a fundamentally different product."</div>
+      <div class="exp-desc">This tests product-market convergence. Your early users will tell you what's missing. If their requests are enhancements to the issue tracker, you're on the right track. If they want an entirely different product, your thesis needs revisiting.</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-grid">
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you do</div>
+          <ul class="exp-list">
+            <li>Weekly conversations with paying users — what frustrated you? What did you wish existed?</li>
+            <li>Build the most-requested features. Ship weekly.</li>
+            <li>Start the blog — you now have screenshots, a story, and credibility</li>
+            <li>First post: "Here's the tool I built to track our building's fire order"</li>
+            <li>Cross-post to strata communities. Measure: does anyone sign up from the blog?</li>
+          </ul>
+        </div>
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you learn</div>
+          <ul class="exp-list">
+            <li>Whether feature requests converge (everyone wants the same thing) or diverge (everyone wants something different)</li>
+            <li>Whether committee members (not just the chair) use it — does it spread within a building?</li>
+            <li>Whether blog traffic converts to signups — is content a viable acquisition channel?</li>
+            <li>What the real churn pattern is — do buildings stay after month 1?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-gate">
+        <div class="gate-box gate-pass">
+          <div class="gate-label">Pass → proceed</div>
+          Feature requests are additive (more of the same), not divergent (something completely different). At least 2 buildings are still active. At least 1 new lead came from organic discovery (blog, community, word of mouth). Move to Experiment 4.
+        </div>
+        <div class="gate-box gate-fail">
+          <div class="gate-label">Fail → pivot</div>
+          Users want a fundamentally different product. Or they stopped using it after month 1. Or nobody new discovered it. Each of these is a different kind of failure requiring a different response — but none of them mean "keep building the same thing."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EXP 4 ═══ -->
+  <div class="experiment" onclick="this.classList.toggle('open')">
+    <div class="exp-header">
+      <div class="exp-top-row">
+        <span class="exp-number">Experiment 4</span>
+        <span class="exp-weeks">Weeks 16–20</span>
+        <span class="exp-chevron">›</span>
+      </div>
+      <div class="exp-hypothesis">"Buildings can onboard <em>without my involvement</em> and the unit economics work."</div>
+      <div class="exp-desc">The scalability hypothesis. Until now, you've been in every onboarding. This tests whether the product is self-explanatory enough that a stranger can sign up, understand it, and start getting value — and whether the price covers your costs.</div>
+    </div>
+    <div class="exp-body">
+      <div class="exp-grid">
+        <div class="exp-panel">
+          <div class="exp-panel-title">What you build</div>
+          <ul class="exp-list">
+            <li>Self-service signup: landing page → create account → create building → start tracking</li>
+            <li>Guided first-run experience: create your first issue, invite a committee member</li>
+            <li>Stripe Checkout in the signup flow</li>
+            <li>Automated database backups, error tracking, uptime monitoring</li>
+            <li>Minimal docs: help pages covering the basics, terms of service, privacy policy</li>
+          </ul>
+        </div>
+        <div class="exp-panel">
+          <div class="exp-panel-title">How you test it</div>
+          <ul class="exp-list">
+            <li>Post the landing page to strata communities. Don't offer to help — just link it.</li>
+            <li>Track the funnel: landing page → signup → created first issue → still active at day 7</li>
+            <li>Measure: what % of signups become active? Where do they drop off?</li>
+            <li>Calculate unit economics: revenue per building vs. infrastructure cost per building</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-gate">
+        <div class="gate-box gate-pass">
+          <div class="gate-label">Pass → you have a business</div>
+          Strangers sign up without your help. Some percentage become active and pay. Infrastructure cost per building is a small fraction of the subscription price. You now have a product, a revenue stream, and a distribution channel. Everything after this is growth.
+        </div>
+        <div class="gate-box gate-fail">
+          <div class="gate-label">Fail → diagnose the funnel</div>
+          Signups don't convert to active users. Either the landing page doesn't explain the value (marketing problem), the onboarding is confusing (UX problem), or the product doesn't deliver enough value for self-service users (product problem). Each is fixable but distinct.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Kill criteria ── -->
+<div class="kill-criteria">
+  <div class="kill-banner">
+    <div class="kill-banner-title">When to Stop</div>
+    <p>The experiment mindset requires you to define what failure looks like in advance, not after the fact. These are signals that the project, in its current form, isn't working:</p>
+    <ul class="kill-list">
+      <li>You can't get your velocity below 2× the estimated timeline after two attempts (Exp 0)</li>
+      <li>After 3 weeks of daily use, you go back to email and spreadsheets because the app adds friction instead of removing it (Exp 1)</li>
+      <li>You can't find 3 committee chairs willing to try it for free, let alone pay (Exp 2)</li>
+      <li>Every early user wants a different product than what you're building (Exp 3)</li>
+      <li>Self-service signup converts at &lt; 2% to active users after 3 iterations of the funnel (Exp 4)</li>
+    </ul>
+    <p style="margin-top: 14px;">Stopping doesn't mean the idea is dead. It means this approach isn't working and the time is better spent finding a different angle — a different entry point, a different audience, or a different product shape entirely.</p>
+  </div>
+</div>
+
+<!-- ── Principles ── -->
+<div class="principles">
+  <div class="principles-title">Operating Principles</div>
+  <div class="principle-grid">
+    <div class="principle">
+      <div class="principle-name">Hypotheses before features</div>
+      <div class="principle-desc">Every piece of code you write should be in service of answering a question. If you can't name the hypothesis, you're building on assumption.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-name">Gates are real</div>
+      <div class="principle-desc">If an experiment fails, you don't proceed to the next one. You diagnose, adjust, and re-run — or you stop. Ignoring a failed gate is the build-plan mindset sneaking back in.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-name">Smallest testable version</div>
+      <div class="principle-desc">Each experiment should test its hypothesis with the minimum possible code. If you're building more than you need to answer the question, you're hedging instead of testing.</div>
+    </div>
+    <div class="principle">
+      <div class="principle-name">Evidence over intuition</div>
+      <div class="principle-desc">Your intuition says strata owners need this tool. Maybe. The experiments will tell you whether that's true, who exactly needs it, and what "this tool" actually is.</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
