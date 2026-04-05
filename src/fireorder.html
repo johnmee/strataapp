@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire Order — Queenscliff Gardens</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background: #f5f5f4;
+  }
+
+  /* ── Layout ── */
+  .site-header {
+    background: #1e3a5f;
+    color: #fff;
+    padding: 10px 24px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .site-header a { color: #90b8e0; text-decoration: none; }
+  .site-header a:hover { text-decoration: underline; }
+  .site-header .sep { opacity: 0.4; }
+
+  .page-hero {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 20px 24px 16px;
+  }
+  .page-hero h1 { font-size: 20px; font-weight: 700; color: #1e3a5f; }
+  .page-hero .subtitle { color: #555; font-size: 13px; margin-top: 2px; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+  }
+  .badge-red    { background: #fde8e8; color: #b91c1c; }
+  .badge-amber  { background: #fef3c7; color: #92400e; }
+  .badge-green  { background: #dcfce7; color: #166534; }
+  .badge-blue   { background: #dbeafe; color: #1e40af; }
+  .badge-grey   { background: #f1f1f1; color: #555; }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 16px auto;
+    padding: 0 16px;
+  }
+
+  @media (max-width: 860px) {
+    .main-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-header h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #475569; }
+  .card-body { padding: 14px 16px; }
+
+  /* ── Tasks ── */
+  .task-list { list-style: none; }
+  .task-item {
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:hover .task-row { background: #f8fafc; }
+  .task-item.open .task-row { background: #eff6ff; }
+
+  .task-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 16px;
+    transition: background 0.1s;
+  }
+  .task-check {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-top: 1px;
+    border: 2px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .task-check.done   { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .task-check.inprog { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .task-meta { flex: 1; min-width: 0; }
+  .task-name { font-weight: 600; font-size: 13px; }
+  .task-name.done { text-decoration: line-through; color: #94a3b8; }
+  .task-detail { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .task-right { display:flex; align-items:center; gap:8px; }
+  .task-chevron { font-size:11px; color:#94a3b8; transition: transform 0.2s; }
+  .task-item.open .task-chevron { transform: rotate(90deg); }
+
+  /* ── Task expansion panel ── */
+  .task-expansion {
+    display: none;
+    border-top: 1px solid #bfdbfe;
+    background: #f0f7ff;
+    padding: 16px 16px 16px 44px;
+  }
+  .task-item.open .task-expansion { display: block; }
+
+  .expansion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 700px) { .expansion-grid { grid-template-columns: 1fr; } }
+
+  .exp-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #cbd5e1;
+  }
+
+  .progress-bar-wrap {
+    background: #dbeafe;
+    border-radius: 999px;
+    height: 8px;
+    margin-bottom: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+  }
+
+  .subtask-list { list-style: none; }
+  .subtask-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #dbeafe;
+  }
+  .subtask-item:last-child { border-bottom: none; }
+  .sub-check {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    border: 1.5px solid #93c5fd;
+  }
+  .sub-check.done   { background: #16a34a; border-color: #16a34a; color: #fff; }
+  .sub-check.active { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .subtask-text { flex:1; color: #334155; }
+  .subtask-text.done { text-decoration: line-through; color: #94a3b8; }
+  .subtask-who { color: #94a3b8; font-size: 11px; white-space: nowrap; }
+
+  .mini-log-entry {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #dbeafe;
+    cursor: pointer;
+  }
+  .mini-log-entry:last-child { border-bottom: none; }
+  .mini-log-entry:hover { color: #1e3a5f; }
+  .mini-log-date { color: #94a3b8; white-space: nowrap; flex-shrink: 0; width: 86px; }
+  .mini-log-icon { flex-shrink: 0; }
+  .mini-log-text { color: #334155; }
+
+  .exp-doc-list { list-style: none; }
+  .exp-doc-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #dbeafe;
+  }
+  .exp-doc-item:last-child { border-bottom: none; }
+  .exp-doc-item a { color: #1e3a5f; text-decoration: none; font-weight: 500; }
+  .exp-doc-item a:hover { text-decoration: underline; }
+  .exp-doc-item .doc-sub { color: #94a3b8; font-size: 11px; }
+
+  .site-diary-entry {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    padding: 5px 0;
+    border-bottom: 1px solid #dbeafe;
+  }
+  .site-diary-entry:last-child { border-bottom: none; }
+  .diary-date { color: #64748b; white-space: nowrap; flex-shrink: 0; width: 86px; }
+  .diary-note { color: #334155; }
+
+  /* ── Communication Log ── */
+  .log-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafafa;
+  }
+  .filter-btn {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    cursor: pointer;
+    color: #475569;
+    font-weight: 500;
+  }
+  .filter-btn.active { background: #1e3a5f; color: #fff; border-color: #1e3a5f; }
+
+  .log-entry {
+    display: grid;
+    grid-template-columns: 90px 22px 1fr 80px;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-entry:hover { background: #f8fafc; }
+
+  .log-date { color: #64748b; white-space: nowrap; padding-top: 1px; }
+  .log-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .icon-email   { background: #dbeafe; }
+  .icon-phone   { background: #dcfce7; }
+  .icon-meeting { background: #fef3c7; }
+  .icon-note    { background: #f3e8ff; }
+  .log-body { min-width: 0; }
+  .log-summary { font-weight: 500; color: #1a1a1a; }
+  .log-parties { color: #64748b; margin-top: 2px; }
+  .log-initiated { font-size: 11px; color: #94a3b8; }
+  .log-time-tag { text-align: right; }
+
+  /* ── Documents ── */
+  .doc-list { list-style: none; }
+  .doc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .doc-item:last-child { border-bottom: none; }
+  .doc-icon { font-size: 16px; flex-shrink: 0; }
+  .doc-meta { flex: 1; min-width: 0; }
+  .doc-name a { color: #1e3a5f; text-decoration: none; font-weight: 500; }
+  .doc-name a:hover { text-decoration: underline; }
+  .doc-sub { font-size: 11px; color: #94a3b8; }
+
+  /* ── Budget ── */
+  .budget-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .budget-stat {
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+  }
+  .budget-stat .label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
+  .budget-stat .amount { font-size: 18px; font-weight: 700; margin-top: 2px; }
+  .amount-total   { color: #1e3a5f; }
+  .amount-paid    { color: #16a34a; }
+  .amount-pending { color: #d97706; }
+
+  .invoice-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .invoice-table th {
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 7px 10px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+  }
+  .invoice-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  .invoice-table tr:last-child td { border-bottom: none; }
+  .invoice-table .num { text-align: right; white-space: nowrap; }
+
+  /* ── Resolutions ── */
+  .resolution-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .resolution-item:last-child { border-bottom: none; }
+  .resolution-meta { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+  .resolution-text { color: #1a1a1a; }
+
+  /* ── Owner Comments ── */
+  .comment-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .comment-item:last-child { border-bottom: none; }
+  .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .comment-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #1e3a5f;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .comment-author { font-size: 12px; font-weight: 600; }
+  .comment-date   { font-size: 11px; color: #94a3b8; }
+  .comment-unit   { font-size: 11px; color: #64748b; background: #f1f5f9; padding: 1px 6px; border-radius: 999px; }
+  .comment-body   { font-size: 13px; color: #334155; padding-left: 34px; }
+
+  /* ── Providers sidebar ── */
+  .provider-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .provider-item:last-child { border-bottom: none; }
+  .provider-name { font-weight: 700; color: #1e3a5f; }
+  .provider-role { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+  .contact-list  { list-style: none; font-size: 12px; }
+  .contact-list li { padding: 2px 0; color: #475569; }
+  .contact-list a { color: #1e3a5f; text-decoration: none; }
+
+  /* ── Timeline chip ── */
+  .time-chip {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .tc-morning  { background: #fef9c3; color: #854d0e; }
+  .tc-afternoon{ background: #e0f2fe; color: #0c4a6e; }
+  .tc-evening  { background: #ede9fe; color: #4c1d95; }
+  .tc-allday   { background: #f1f5f9; color: #475569; }
+
+  /* ══════════════════════════════════════
+     MODAL
+  ══════════════════════════════════════ */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.45);
+    z-index: 100;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 680px;
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: #1e3a5f;
+    color: #fff;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .modal-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .modal-header-body { flex: 1; min-width: 0; }
+  .modal-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .modal-subtitle { font-size: 12px; opacity: 0.7; margin-top: 3px; }
+  .modal-close {
+    background: none;
+    border: none;
+    color: #fff;
+    opacity: 0.6;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 0 0 8px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { opacity: 1; }
+
+  .modal-meta-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-wrap: wrap;
+  }
+  .modal-meta-item {
+    padding: 9px 16px;
+    border-right: 1px solid #e2e8f0;
+    font-size: 12px;
+  }
+  .modal-meta-item:last-child { border-right: none; }
+  .modal-meta-label { color: #94a3b8; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 2px; }
+  .modal-meta-value { color: #1a1a1a; font-weight: 600; }
+
+  .modal-body { padding: 20px; }
+
+  .modal-section { margin-bottom: 20px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  /* email body */
+  .email-body {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #334155;
+    white-space: pre-wrap;
+  }
+  .email-field {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .email-field:last-child { border-bottom: none; margin-bottom: 10px; }
+  .email-field-label { color: #94a3b8; width: 40px; flex-shrink: 0; }
+  .email-field-value { color: #334155; }
+
+  /* call notes */
+  .call-notes {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #166534;
+  }
+
+  /* meeting notes */
+  .meeting-notes {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #78350f;
+  }
+
+  .modal-linked-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .modal-linked-task:hover { background: #dbeafe; }
+
+  .modal-attachment-list { list-style: none; }
+  .modal-attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .modal-attachment-item:last-child { border-bottom: none; }
+  .modal-attachment-item a { color: #1e3a5f; text-decoration: none; font-weight: 500; }
+  .modal-attachment-item a:hover { text-decoration: underline; }
+  .modal-attachment-sub { font-size: 11px; color: #94a3b8; }
+
+  .modal-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+  .modal-nav-btn {
+    font-size: 12px;
+    color: #1e3a5f;
+    background: none;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .modal-nav-btn:hover { background: #f1f5f9; }
+  .modal-nav-btn:disabled { opacity: 0.3; cursor: default; }
+</style>
+</head>
+<body>
+
+<!-- Site breadcrumb -->
+<div class="site-header">
+  <a href="../">Queenscliff Gardens</a>
+  <span class="sep">›</span>
+  <a href="./">Strata Log</a>
+  <span class="sep">›</span>
+  Fire Order
+</div>
+
+<!-- Page hero -->
+<div class="page-hero">
+  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+    <h1>Fire Order</h1>
+    <span class="badge badge-amber">In Progress</span>
+    <span style="font-size:12px;color:#94a3b8;">Issued by NSW Fire &amp; Rescue · Order #FO-2024-0381</span>
+  </div>
+  <div class="subtitle" style="margin-top:8px;">
+    Rectification of fire safety defects identified in the Annual Fire Safety Statement inspection — all common areas, basement carpark, and roof plantroom.
+  </div>
+  <div style="margin-top:10px; font-size:12px; color:#64748b; display:flex; gap:20px; flex-wrap:wrap;">
+    <span><strong>Issued:</strong> 12 Aug 2024</span>
+    <span><strong>Compliance deadline:</strong> <span style="color:#b91c1c; font-weight:600;">30 Jun 2025</span></span>
+    <span><strong>Strata Manager:</strong> Charles Crist, The StrataLife</span>
+    <span><strong>Last updated:</strong> 19 Mar 2025</span>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- ══════════════════════════════════════
+       LEFT COLUMN
+  ══════════════════════════════════════ -->
+  <div>
+
+    <!-- Tasks -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Tasks &amp; Rectification Items</h2>
+        <span style="font-size:12px; color:#64748b;">7 of 11 complete</span>
+      </div>
+      <ul class="task-list" style="padding:0;">
+
+        <li class="task-item" data-task="engage-engineer">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Engage fire engineer — scope of works</div>
+              <div class="task-detail">EBS engaged as lead fire engineer. Scope of works report issued 4 Sep 2024.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 4 Sep 2024 · EBS Fire Engineering</p>
+            <div style="font-size:13px; color:#334155; margin-bottom:12px;">Following receipt of the Fire Order on 12 Aug 2024, the committee sought quotes from fire engineering consultants. EBS was selected based on their prior knowledge of the building from the 2022 AFSS.</div>
+            <div class="exp-section-title">Documents</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">📋 <a href="#">EBS Scope of Works Report</a> <span class="doc-sub">— 4 Sep 2024</span></li>
+              <li class="exp-doc-item">📄 <a href="#">Fire Order FO-2024-0381</a> <span class="doc-sub">— NSW Fire &amp; Rescue, 12 Aug 2024</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="exit-lighting">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Emergency exit lighting — Level 2 &amp; 3 corridors</div>
+              <div class="task-detail">Replaced 14 faulty fittings. Works completed by Sparkline Electrical 22 Oct 2024.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 22 Oct 2024 · Sparkline Electrical</p>
+            <div style="font-size:13px; color:#334155; margin-bottom:12px;">14 emergency/exit light fittings on Levels 2 and 3 failed the 90-minute discharge test. Sparkline replaced all 14 with LED emergency batten fittings (IP-rated). EBS inspected and confirmed compliance on 29 Oct 2024.</div>
+            <div class="exp-section-title">Documents</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">🧾 <a href="#">Sparkline Invoice SPARK-1104</a> <span class="doc-sub">— $4,840 · Paid</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="fire-doors-basement">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Fire door remediation — basement B1 &amp; B2</div>
+              <div class="task-detail">4 doors re-hung, seals replaced, self-closers adjusted. Certified by EBS 14 Nov 2024.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 14 Nov 2024 · QFD Doorworks (contractor)</p>
+            <div style="font-size:13px; color:#334155; margin-bottom:12px;">4 fire doors in basement levels B1 and B2 were found to be non-compliant: incorrect gap tolerances, failed intumescent seals, and non-closing mechanisms. All 4 doors re-hung and recertified under AS 1905.1.</div>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="hose-reels">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Hose reel pressure test — all floors</div>
+              <div class="task-detail">All 8 hose reels tested and tagged. Defective reel on Level 4 replaced.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 30 Nov 2024 · Hydropressure Services</p>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="quotes">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Obtain comparative quotes — sprinkler upgrade</div>
+              <div class="task-detail">Quotes received from EBS, AED, and Incode. Presented to committee 18 Jan 2025.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 18 Jan 2025</p>
+            <div class="exp-section-title">Quotes received</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">💰 <a href="#">EBS Quote</a> <span class="doc-sub">— $74,500 incl. GST (does not include commissioning)</span></li>
+              <li class="exp-doc-item">💰 <a href="#">AED Quote</a> <span class="doc-sub">— $61,200 incl. GST (includes commissioning) ✓ accepted</span></li>
+              <li class="exp-doc-item">💰 <a href="#">Incode Quote</a> <span class="doc-sub">— $68,400 incl. GST (does not include commissioning)</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="egm">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">EGM — approve special levy for sprinkler upgrade</div>
+              <div class="task-detail">Special levy of $1,850/unit approved at EGM 12 Feb 2025. 34 of 40 lots voted in favour.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">EGM held 12 Feb 2025 · 34 in favour, 4 against, 2 abstained</p>
+            <div class="exp-section-title">Documents</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">📝 <a href="#">EGM Notice &amp; Agenda</a> <span class="doc-sub">— circulated 29 Jan 2025</span></li>
+              <li class="exp-doc-item">📝 <a href="#">EGM Minutes</a> <span class="doc-sub">— issued 19 Feb 2025</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="award-contract">
+          <div class="task-row">
+            <div class="task-check done">✓</div>
+            <div class="task-meta">
+              <div class="task-name done">Award sprinkler upgrade contract to AED</div>
+              <div class="task-detail">Contract executed 21 Feb 2025. Works to commence 3 Mar 2025.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-green">Done</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:12px;">Completed 21 Feb 2025</p>
+            <div class="exp-section-title">Documents</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">📑 <a href="#">AED Contract — Sprinkler Upgrade</a> <span class="doc-sub">— executed 21 Feb 2025, $61,200 fixed price</span></li>
+              <li class="exp-doc-item">📧 <a href="#">EBS Recommendation Letter</a> <span class="doc-sub">— Matthew, 24 Feb 2025</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- ── DETAILED task ── -->
+        <li class="task-item open" data-task="sprinkler-upgrade">
+          <div class="task-row">
+            <div class="task-check inprog">→</div>
+            <div class="task-meta">
+              <div class="task-name">Sprinkler system upgrade — plantroom &amp; basement</div>
+              <div class="task-detail">AED commenced works 3 Mar 2025. Est. completion 2 May 2025.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-amber">Active</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <!-- progress -->
+            <div style="margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:#475569; margin-bottom:4px;">
+                <span>Overall progress</span><span style="font-weight:700;">35%</span>
+              </div>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:35%"></div></div>
+              <div style="font-size:11px; color:#64748b; margin-top:3px;">Commenced 3 Mar 2025 · Est. completion 2 May 2025</div>
+            </div>
+
+            <div class="expansion-grid">
+              <!-- Sub-tasks -->
+              <div>
+                <div class="exp-section-title">Work stages</div>
+                <ul class="subtask-list">
+                  <li class="subtask-item">
+                    <div class="sub-check done">✓</div>
+                    <div class="subtask-text done">Mobilisation &amp; site establishment</div>
+                    <div class="subtask-who">AED · 3 Mar</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check done">✓</div>
+                    <div class="subtask-text done">Pump set delivery &amp; inspection</div>
+                    <div class="subtask-who">AED · 7 Mar</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check active">→</div>
+                    <div class="subtask-text">Plantroom pipework rough-in</div>
+                    <div class="subtask-who">AED · in prog.</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check"></div>
+                    <div class="subtask-text">Basement distribution pipework</div>
+                    <div class="subtask-who">AED · est. Apr</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check"></div>
+                    <div class="subtask-text">Sprinkler head installation — all floors</div>
+                    <div class="subtask-who">AED · est. Apr</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check"></div>
+                    <div class="subtask-text">Hydraulic pressure testing</div>
+                    <div class="subtask-who">AED · est. late Apr</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check"></div>
+                    <div class="subtask-text">Commissioning — EBS witness</div>
+                    <div class="subtask-who">AED + EBS · est. May</div>
+                  </li>
+                  <li class="subtask-item">
+                    <div class="sub-check"></div>
+                    <div class="subtask-text">EBS fire engineer's certificate issued</div>
+                    <div class="subtask-who">EBS Johnny · est. May</div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Open items -->
+              <div>
+                <div class="exp-section-title">Open items</div>
+                <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:5px; padding:10px; font-size:12px; color:#78350f; margin-bottom:10px;">
+                  <strong>⚠ Variation pending approval</strong><br>
+                  EBS requested an additional isolation valve in B2 (est. $680). Awaiting committee sign-off. <a href="#" style="color:#b45309;">View variation →</a>
+                </div>
+                <div class="exp-section-title" style="margin-top:12px;">Key contacts for this task</div>
+                <div style="font-size:12px; color:#334155; display:flex; flex-direction:column; gap:4px;">
+                  <div>📋 <strong>Superintendent:</strong> EBS — Johnny</div>
+                  <div>🔧 <strong>Contractor PM:</strong> AED — Karen Bell</div>
+                  <div>🔧 <strong>Site super:</strong> AED — Dave Nguyen</div>
+                  <div>🏢 <strong>Strata Manager:</strong> Charles Crist</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Site diary -->
+            <div class="exp-section-title">Site diary</div>
+            <div style="margin-bottom:16px;">
+              <div class="site-diary-entry">
+                <div class="diary-date">19 Mar 2025</div>
+                <div class="diary-note">Plantroom pipework approx. 60% complete. Pump set in position, not yet connected. No access issues reported.</div>
+              </div>
+              <div class="site-diary-entry">
+                <div class="diary-date">14 Mar 2025</div>
+                <div class="diary-note">Noise complaint received from Unit 7 re early morning works. Charles confirmed permitted hours 7am–5pm Mon–Fri with AED.</div>
+              </div>
+              <div class="site-diary-entry">
+                <div class="diary-date">11 Mar 2025</div>
+                <div class="diary-note">EBS issued variation request — additional isolation valve required at B2 junction per hydraulic design review. Est. $680 + GST.</div>
+              </div>
+              <div class="site-diary-entry">
+                <div class="diary-date">6 Mar 2025</div>
+                <div class="diary-note">Commencement walkthrough completed. EBS (Matthew), AED site team, Charles Crist. Minor access issue at plantroom hatch — AED to liaise with building manager.</div>
+              </div>
+              <div class="site-diary-entry">
+                <div class="diary-date">3 Mar 2025</div>
+                <div class="diary-note">AED mobilised on site. Equipment delivered. Notice posted to all residents.</div>
+              </div>
+            </div>
+
+            <!-- Related comms -->
+            <div class="exp-section-title">Related communications</div>
+            <div style="margin-bottom:16px;">
+              <div class="mini-log-entry" data-log="3" onclick="openModal(3)">
+                <div class="mini-log-date">19 Mar 2025</div>
+                <div class="mini-log-icon">📞</div>
+                <div class="mini-log-text">AED site supervisor — progress update on plantroom pipework</div>
+              </div>
+              <div class="mini-log-entry" data-log="5" onclick="openModal(5)">
+                <div class="mini-log-date">11 Mar 2025</div>
+                <div class="mini-log-icon">📧</div>
+                <div class="mini-log-text">EBS (Johnny) — variation request re: additional isolation valve in B2</div>
+              </div>
+              <div class="mini-log-entry" data-log="6" onclick="openModal(6)">
+                <div class="mini-log-date">6 Mar 2025</div>
+                <div class="mini-log-icon">🤝</div>
+                <div class="mini-log-text">On-site meeting: AED, EBS (Matthew), strata manager — commencement walkthrough</div>
+              </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="exp-section-title">Documents</div>
+            <ul class="exp-doc-list">
+              <li class="exp-doc-item">📑 <a href="#">AED Contract — Sprinkler Upgrade</a> <span class="doc-sub">— executed 21 Feb 2025, $61,200 fixed price</span></li>
+              <li class="exp-doc-item">🧾 <a href="#">AED Progress Claim 1 (mobilisation)</a> <span class="doc-sub">— $14,000 · Paid 10 Mar 2025</span></li>
+              <li class="exp-doc-item">🔧 <a href="#">EBS Variation — B2 Isolation Valve</a> <span class="doc-sub">— est. $680 · pending approval</span></li>
+              <li class="exp-doc-item">📋 <a href="#">AED Construction Programme</a> <span class="doc-sub">— issued 25 Feb 2025</span></li>
+            </ul>
+          </div>
+        </li>
+        <!-- ── end detailed task ── -->
+
+        <li class="task-item" data-task="door-audit">
+          <div class="task-row">
+            <div class="task-check inprog">→</div>
+            <div class="task-meta">
+              <div class="task-name">Fire door audit — Levels 1–6 (Incode)</div>
+              <div class="task-detail">Site visit scheduled 28 Mar 2025.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-amber">Scheduled</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b; margin-bottom:8px;">Incode Fire engaged Feb 2025 · Site visit 28 Mar 2025</p>
+            <div style="font-size:13px; color:#334155;">Incode to audit all 22 fire doors on Levels 1–6 against AS 1905.1. Report expected within 10 business days of inspection.</div>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="commissioning">
+          <div class="task-row">
+            <div class="task-check"></div>
+            <div class="task-meta">
+              <div class="task-name">Sprinkler commissioning &amp; EBS sign-off</div>
+              <div class="task-detail">EBS (Johnny) to witness commissioning and issue fire engineer's certificate.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-grey">Pending</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b;">Estimated May 2025. Dependent on AED completing installation works.</p>
+          </div>
+        </li>
+
+        <li class="task-item" data-task="afss">
+          <div class="task-row">
+            <div class="task-check"></div>
+            <div class="task-meta">
+              <div class="task-name">Lodge Annual Fire Safety Statement</div>
+              <div class="task-detail">Final AFSS to be lodged with council once all works certified. Due before 30 Jun 2025.</div>
+            </div>
+            <div class="task-right">
+              <span class="badge badge-grey">Pending</span>
+              <span class="task-chevron">›</span>
+            </div>
+          </div>
+          <div class="task-expansion">
+            <p style="font-size:12px; color:#64748b;">Cannot proceed until EBS fire engineer's certificate issued and Incode door audit complete.</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+
+    <!-- Communication Log -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Communication Log</h2>
+        <span style="font-size:12px; color:#64748b;">34 entries</span>
+      </div>
+      <div class="log-filters">
+        <button class="filter-btn active">All</button>
+        <button class="filter-btn">📧 Email</button>
+        <button class="filter-btn">📞 Phone</button>
+        <button class="filter-btn">🤝 In Person</button>
+        <button class="filter-btn">📝 Note</button>
+        <button class="filter-btn">EBS</button>
+        <button class="filter-btn">AED</button>
+        <button class="filter-btn">Incode</button>
+      </div>
+
+      <div class="log-entry" onclick="openModal(0)">
+        <div class="log-date">19 Mar 2025</div>
+        <div class="log-icon icon-phone">📞</div>
+        <div class="log-body">
+          <div class="log-summary">AED site supervisor — progress update on plantroom pipework</div>
+          <div class="log-parties">Charles Crist → AED (Dave Nguyen) · <span class="log-initiated">Initiated by: Strata Manager</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-morning">Morning</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(1)">
+        <div class="log-date">17 Mar 2025</div>
+        <div class="log-icon icon-email">📧</div>
+        <div class="log-body">
+          <div class="log-summary">Incode — confirmed 28 Mar site visit for fire door audit, access arrangements</div>
+          <div class="log-parties">Incode → Charles Crist · <span class="log-initiated">Initiated by: Incode</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-afternoon">Afternoon</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(2)">
+        <div class="log-date">11 Mar 2025</div>
+        <div class="log-icon icon-email">📧</div>
+        <div class="log-body">
+          <div class="log-summary">EBS (Johnny) — variation request re: additional isolation valve in B2</div>
+          <div class="log-parties">EBS Johnny → Charles Crist · <span class="log-initiated">Initiated by: EBS</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-morning">Morning</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(3)">
+        <div class="log-date">6 Mar 2025</div>
+        <div class="log-icon icon-meeting">🤝</div>
+        <div class="log-body">
+          <div class="log-summary">On-site meeting: AED, EBS (Matthew), strata manager — commencement of works walkthrough</div>
+          <div class="log-parties">AED + EBS Matthew + Charles Crist</div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-morning">Morning</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(4)">
+        <div class="log-date">24 Feb 2025</div>
+        <div class="log-icon icon-email">📧</div>
+        <div class="log-body">
+          <div class="log-summary">EBS (Matthew) — issued formal recommendation letter endorsing AED quote</div>
+          <div class="log-parties">EBS Matthew → Charles Crist · <span class="log-initiated">Initiated by: Strata Manager (requested)</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-afternoon">Afternoon</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(5)">
+        <div class="log-date">12 Feb 2025</div>
+        <div class="log-icon icon-meeting">🤝</div>
+        <div class="log-body">
+          <div class="log-summary">EGM held on-site — special levy resolution passed, AED contract authorised</div>
+          <div class="log-parties">Owners Corporation (34 lots present/proxied) + Charles Crist</div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-evening">Evening</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(6)">
+        <div class="log-date">29 Jan 2025</div>
+        <div class="log-icon icon-phone">📞</div>
+        <div class="log-body">
+          <div class="log-summary">EBS (Johnny) — clarification on scope: AED quote includes commissioning, Incode does not</div>
+          <div class="log-parties">Charles Crist → EBS Johnny · <span class="log-initiated">Initiated by: Strata Manager</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-afternoon">Afternoon</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(7)">
+        <div class="log-date">18 Jan 2025</div>
+        <div class="log-icon icon-meeting">🤝</div>
+        <div class="log-body">
+          <div class="log-summary">Committee meeting — three quotes tabled, EBS recommendation discussed, EGM date set</div>
+          <div class="log-parties">Committee + Charles Crist</div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-evening">Evening</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(8)">
+        <div class="log-date">14 Jan 2025</div>
+        <div class="log-icon icon-email">📧</div>
+        <div class="log-body">
+          <div class="log-summary">Incode — quote for sprinkler upgrade submitted ($68,400 incl. GST)</div>
+          <div class="log-parties">Incode → Charles Crist · <span class="log-initiated">Initiated by: Incode</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-morning">Morning</span></div>
+      </div>
+
+      <div class="log-entry" onclick="openModal(9)">
+        <div class="log-date">9 Jan 2025</div>
+        <div class="log-icon icon-email">📧</div>
+        <div class="log-body">
+          <div class="log-summary">AED — quote for sprinkler upgrade submitted ($61,200 incl. GST, incl. commissioning)</div>
+          <div class="log-parties">AED → Charles Crist · <span class="log-initiated">Initiated by: AED</span></div>
+        </div>
+        <div class="log-time-tag"><span class="time-chip tc-afternoon">Afternoon</span></div>
+      </div>
+
+      <div style="text-align:center; padding: 10px 16px; font-size:12px;">
+        <a href="#" style="color:#1e3a5f;">Show all 34 entries ↓</a>
+      </div>
+    </div>
+
+    <!-- Budget & Invoices -->
+    <div class="card">
+      <div class="card-header"><h2>Budget &amp; Invoices</h2></div>
+      <div class="card-body">
+        <div class="budget-summary">
+          <div class="budget-stat">
+            <div class="label">Approved Budget</div>
+            <div class="amount amount-total">$92,800</div>
+          </div>
+          <div class="budget-stat">
+            <div class="label">Paid to Date</div>
+            <div class="amount amount-paid">$28,560</div>
+          </div>
+          <div class="budget-stat">
+            <div class="label">Pending / Contracted</div>
+            <div class="amount amount-pending">$61,200</div>
+          </div>
+        </div>
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Invoice / Ref</th><th>Supplier</th><th>Description</th><th>Date</th><th class="num">Amount</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EBS-2024-0912</td><td>EBS</td><td>Scope of works report &amp; fire engineer consultation</td><td>30 Sep 2024</td><td class="num">$3,300</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>SPARK-1104</td><td>Sparkline Elec.</td><td>Exit &amp; emergency lighting replacement — L2 &amp; L3</td><td>28 Oct 2024</td><td class="num">$4,840</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>EBS-2024-1122</td><td>EBS</td><td>Fire door remediation certification</td><td>20 Nov 2024</td><td class="num">$1,650</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>HYDRO-0071</td><td>Hydropressure</td><td>Hose reel pressure test &amp; Level 4 reel replacement</td><td>5 Dec 2024</td><td class="num">$2,970</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>EBS-2025-0203</td><td>EBS</td><td>Quote preparation &amp; tender assessment</td><td>3 Feb 2025</td><td class="num">$1,800</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>AED-2025-0047</td><td>AED</td><td>Sprinkler upgrade — progress claim 1 (mobilisation)</td><td>10 Mar 2025</td><td class="num">$14,000</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr style="background:#fffbeb;"><td>AED-2025-0061</td><td>AED</td><td>Sprinkler upgrade — progress claim 2 (pipework)</td><td>Due ~15 Apr 2025</td><td class="num">$22,000</td><td><span class="badge badge-amber">Pending</span></td></tr>
+            <tr style="background:#fffbeb;"><td>AED-2025-0062</td><td>AED</td><td>Sprinkler upgrade — final claim (commissioning)</td><td>Due ~15 May 2025</td><td class="num">$25,200</td><td><span class="badge badge-grey">Forecast</span></td></tr>
+            <tr style="background:#fffbeb;"><td>EBS-2025-COMM</td><td>EBS</td><td>Commissioning witness &amp; fire engineer certificate</td><td>Due ~May 2025</td><td class="num">$2,200</td><td><span class="badge badge-grey">Forecast</span></td></tr>
+            <tr style="background:#fffbeb;"><td>INCODE-2025-XX</td><td>Incode</td><td>Fire door audit — Levels 1–6</td><td>Due ~Apr 2025</td><td class="num">$11,800</td><td><span class="badge badge-grey">Forecast</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Resolutions -->
+    <div class="card">
+      <div class="card-header"><h2>Resolutions &amp; Decisions</h2></div>
+      <div class="card-body" style="padding: 4px 16px 14px;">
+        <div class="resolution-item">
+          <div class="resolution-meta">EGM · 12 Feb 2025 · Resolution 1 of 3</div>
+          <div class="resolution-text"><strong>Carried (ordinary resolution):</strong> That the Owners Corporation approve a special levy of $1,850 per unit entitlement, payable in two instalments: 50% by 28 Feb 2025 and 50% by 30 Apr 2025. <em>34 in favour, 4 against, 2 abstained.</em></div>
+        </div>
+        <div class="resolution-item">
+          <div class="resolution-meta">EGM · 12 Feb 2025 · Resolution 2 of 3</div>
+          <div class="resolution-text"><strong>Carried (ordinary resolution):</strong> That the Strata Manager be authorised to execute a contract with AED Fire Protection at $61,200 incl. GST. <em>Unanimous.</em></div>
+        </div>
+        <div class="resolution-item">
+          <div class="resolution-meta">EGM · 12 Feb 2025 · Resolution 3 of 3</div>
+          <div class="resolution-text"><strong>Carried (ordinary resolution):</strong> That EBS Fire Engineering be retained as superintendent/certifier at a cost not exceeding $4,000 incl. GST. <em>Unanimous.</em></div>
+        </div>
+        <div class="resolution-item">
+          <div class="resolution-meta">Committee meeting · 18 Jan 2025</div>
+          <div class="resolution-text"><strong>Committee decision:</strong> To call an EGM for 12 Feb 2025. Three comparative quotes to be circulated to all owners by 31 Jan 2025.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Owner Comments -->
+    <div class="card">
+      <div class="card-header"><h2>Owner Comments</h2><span style="font-size:12px; color:#64748b;">via owner portal</span></div>
+      <div class="card-body" style="padding: 4px 16px 14px;">
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar">MR</div>
+            <span class="comment-author">M. Reynolds</span>
+            <span class="comment-unit">Unit 12</span>
+            <span class="comment-date">20 Mar 2025</span>
+          </div>
+          <div class="comment-body">When is the second levy instalment due? I haven't seen a notice come through yet for the April payment.</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar" style="background:#0e7490;">PL</div>
+            <span class="comment-author">P. Lawson</span>
+            <span class="comment-unit">Unit 7</span>
+            <span class="comment-date">15 Mar 2025</span>
+          </div>
+          <div class="comment-body">There's been a lot of noise from the plantroom during the works, especially early mornings. Can we get confirmation of the permitted hours?</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar" style="background:#7c3aed;">SW</div>
+            <span class="comment-author">S. Whitfield</span>
+            <span class="comment-unit">Unit 21</span>
+            <span class="comment-date">14 Feb 2025</span>
+          </div>
+          <div class="comment-body">Happy with how this has been handled. Good to see three quotes obtained and the committee making a considered decision.</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar" style="background:#b45309;">TK</div>
+            <span class="comment-author">T. Kwan</span>
+            <span class="comment-unit">Unit 3</span>
+            <span class="comment-date">30 Jan 2025</span>
+          </div>
+          <div class="comment-body">Why is the AED quote $7,200 cheaper than Incode? Is there something different in what's included? I'd like this clarified before the EGM.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left column -->
+
+  <!-- ══════════════════════════════════════
+       RIGHT COLUMN — sidebar
+  ══════════════════════════════════════ -->
+  <div>
+    <div class="card">
+      <div class="card-header"><h2>Status Snapshot</h2></div>
+      <div class="card-body" style="font-size:13px; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#475569;">Compliance deadline</span>
+          <span style="font-weight:700; color:#b91c1c;">30 Jun 2025</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#475569;">Days remaining</span>
+          <span style="font-weight:700;">95</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#475569;">Works on track</span>
+          <span class="badge badge-green">Yes</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#475569;">Open variations</span>
+          <span class="badge badge-amber">1</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:#475569;">Overdue invoices</span>
+          <span class="badge badge-green">None</span>
+        </div>
+        <hr style="border:none; border-top:1px solid #f1f5f9;">
+        <div style="background:#fef3c7; border-radius:4px; padding:8px; font-size:12px; color:#92400e;">
+          <strong>Action needed:</strong> EBS variation (isolation valve, est. $680) awaiting committee approval.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>External Providers</h2></div>
+      <div class="card-body" style="padding: 4px 16px 14px;">
+        <div class="provider-item">
+          <div class="provider-name">EBS Fire Engineering</div>
+          <div class="provider-role">Lead fire engineer · Superintendent · Certifier</div>
+          <ul class="contact-list">
+            <li>Johnny — Principal Engineer · <a href="#">johnny@ebsfire.com.au</a></li>
+            <li>Matthew — Project Engineer · <a href="#">matthew@ebsfire.com.au</a></li>
+            <li>Office: (02) 9234 5600</li>
+          </ul>
+        </div>
+        <div class="provider-item">
+          <div class="provider-name">AED Fire Protection</div>
+          <div class="provider-role">Contractor — sprinkler upgrade (engaged)</div>
+          <ul class="contact-list">
+            <li>Site supervisor: Dave Nguyen</li>
+            <li>Karen Bell (PM) · <a href="#">kbell@aedfire.com.au</a></li>
+            <li>Office: (02) 8811 2200</li>
+          </ul>
+        </div>
+        <div class="provider-item">
+          <div class="provider-name">Incode Fire</div>
+          <div class="provider-role">Fire door audit (engaged)</div>
+          <ul class="contact-list">
+            <li>Sam Tran · <a href="#">stran@incodefire.com.au</a></li>
+            <li>Office: (02) 9553 7700</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>Documents</h2></div>
+      <div class="card-body" style="padding: 4px 16px 14px;">
+        <ul class="doc-list">
+          <li class="doc-item"><div class="doc-icon">📄</div><div class="doc-meta"><div class="doc-name"><a href="#">Fire Order FO-2024-0381</a></div><div class="doc-sub">NSW Fire &amp; Rescue · 12 Aug 2024</div></div></li>
+          <li class="doc-item"><div class="doc-icon">📋</div><div class="doc-meta"><div class="doc-name"><a href="#">EBS Scope of Works Report</a></div><div class="doc-sub">EBS Fire Engineering · 4 Sep 2024</div></div></li>
+          <li class="doc-item"><div class="doc-icon">💰</div><div class="doc-meta"><div class="doc-name"><a href="#">AED Quote — Sprinkler Works</a></div><div class="doc-sub">AED · 9 Jan 2025 · $61,200 ✓ accepted</div></div></li>
+          <li class="doc-item"><div class="doc-icon">📝</div><div class="doc-meta"><div class="doc-name"><a href="#">EGM Minutes — 12 Feb 2025</a></div><div class="doc-sub">issued 19 Feb 2025</div></div></li>
+          <li class="doc-item"><div class="doc-icon">📑</div><div class="doc-meta"><div class="doc-name"><a href="#">AED Contract — Sprinkler Upgrade</a></div><div class="doc-sub">Executed 21 Feb 2025</div></div></li>
+          <li class="doc-item"><div class="doc-icon">🔧</div><div class="doc-meta"><div class="doc-name"><a href="#">EBS Variation — B2 Isolation Valve</a></div><div class="doc-sub">11 Mar 2025 · est. $680 · <span style="color:#d97706;">pending approval</span></div></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-layout -->
+
+
+<!-- ══════════════════════════════════════
+     COMMUNICATION LOG MODAL
+══════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header" id="modal-header">
+      <div class="modal-header-icon" id="modal-icon">📧</div>
+      <div class="modal-header-body">
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-subtitle" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-meta-bar" id="modal-meta-bar"></div>
+
+    <div class="modal-body" id="modal-body"></div>
+
+    <div class="modal-nav">
+      <button class="modal-nav-btn" id="modal-prev" onclick="navigateModal(-1)">← Previous</button>
+      <span style="font-size:12px; color:#94a3b8;" id="modal-count"></span>
+      <button class="modal-nav-btn" id="modal-next" onclick="navigateModal(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ── Log data ──────────────────────────────────────────────────────
+const LOG = [
+  {
+    id: 0,
+    type: "phone",
+    icon: "📞",
+    date: "19 March 2025",
+    time: "Morning (approx. 9:15am)",
+    title: "Progress update — plantroom pipework",
+    subtitle: "Phone call · AED site works",
+    from: "Charles Crist (Strata Manager)",
+    to: "Dave Nguyen (AED site supervisor)",
+    initiated: "Strata Manager",
+    linkedTask: { label: "Sprinkler system upgrade — plantroom & basement", id: "sprinkler-upgrade" },
+    notes: `Charles called Dave to get an update on works progress ahead of the committee's weekly check-in.
+
+Dave confirmed:
+- Plantroom rough-in approximately 60% complete
+- Pump set is in position, connections to commence this week
+- No access issues reported since the early-morning noise complaint was resolved
+- On track for basement pipework to commence the week of 24 Mar
+
+Action: Charles to send committee update email. No variations requested at this time.`,
+    attachments: []
+  },
+  {
+    id: 1,
+    type: "email",
+    icon: "📧",
+    date: "17 March 2025",
+    time: "Afternoon (2:34pm)",
+    title: "Confirmed: 28 Mar site visit — fire door audit access arrangements",
+    subtitle: "Email · Incode Fire → Charles Crist",
+    from: "Sam Tran <stran@incodefire.com.au>",
+    to: "Charles Crist <ccrist@stratalife.com.au>",
+    initiated: "Incode",
+    linkedTask: { label: "Fire door audit — Levels 1–6 (Incode)", id: "door-audit" },
+    emailBody: `Hi Charles,
+
+Thanks for confirming. We can confirm our auditor will attend on Thursday 28 March, arriving at 8:30am.
+
+Access requirements:
+- We'll need master key access to all Level 1–6 corridor fire doors (22 doors total)
+- Please ensure the building manager is available to assist for the first 30 minutes
+- We anticipate the audit will take approximately 4 hours
+
+Please note we will need to prop each door open briefly during inspection — residents in affected corridors should be notified.
+
+Our report will be issued within 10 business days of the inspection.
+
+Please reply to confirm the above arrangements suit.
+
+Kind regards,
+Sam Tran
+Incode Fire`,
+    attachments: []
+  },
+  {
+    id: 2,
+    type: "email",
+    icon: "📧",
+    date: "11 March 2025",
+    time: "Morning (10:07am)",
+    title: "Variation request — additional isolation valve, basement B2",
+    subtitle: "Email · EBS Johnny → Charles Crist",
+    from: "Johnny Papadopoulos <johnny@ebsfire.com.au>",
+    to: "Charles Crist <ccrist@stratalife.com.au>",
+    initiated: "EBS",
+    linkedTask: { label: "Sprinkler system upgrade — plantroom & basement", id: "sprinkler-upgrade" },
+    emailBody: `Hi Charles,
+
+During our review of AED's installed pipework in the B2 basement level last week, we identified that the hydraulic design requires an additional isolation valve at the junction of the B2 distribution main and the riser feeding Levels 1–3.
+
+This was not captured in the original scope — the as-built arrangement differs slightly from the design drawings due to the existing services in that plant alcove.
+
+Proposed variation:
+- Supply and install 1x 65mm gate valve (fire-rated) at B2 riser junction
+- Adjust hydraulic calculations to reflect revised layout
+- Estimated cost: $680 + GST (AED to carry out works under EBS direction)
+
+This variation is required to ensure the system can be isolated zone-by-zone for future maintenance in accordance with AS 2118.1.
+
+Please confirm committee approval at your earliest convenience so as not to delay the construction programme. AED can carry out this work concurrently with the ongoing pipework.
+
+Happy to discuss if you have questions.
+
+Regards,
+Johnny Papadopoulos
+Principal Fire Engineer — EBS Fire Engineering`,
+    attachments: [
+      { name: "EBS-VAR-001 Variation Form", sub: "PDF · 84 KB" },
+      { name: "B2 Riser Junction — Sketch", sub: "PDF · 210 KB" },
+    ]
+  },
+  {
+    id: 3,
+    type: "meeting",
+    icon: "🤝",
+    date: "6 March 2025",
+    time: "Morning (8:00am – 10:30am)",
+    title: "Commencement of works walkthrough — on-site",
+    subtitle: "In-person meeting · plantroom & basement",
+    from: "—",
+    to: "—",
+    parties: "AED (Karen Bell, Dave Nguyen) · EBS (Matthew Hoang) · Charles Crist",
+    linkedTask: { label: "Sprinkler system upgrade — plantroom & basement", id: "sprinkler-upgrade" },
+    notes: `Pre-commencement walkthrough of all work areas conducted by AED, EBS, and strata manager.
+
+Areas inspected:
+- Roof plantroom (pump set location, pipe entry points)
+- Basement B1 & B2 (distribution pipework routes, existing services)
+- Levels 1–3 riser cupboards
+
+Key points noted:
+1. Plant room hatch — AED noted the existing hatch latch is stiff; strata manager to arrange repair via building manager before materials are lifted to roof
+2. B2 plant alcove — pipe route partially obstructed by existing hydraulic services; AED to submit revised routing for EBS review by 10 Mar
+3. Resident notice posted in foyer and email circulated to all owners confirming works period and permitted hours (7am–5pm Mon–Fri)
+4. Site induction completed for AED team (3 personnel)
+5. Emergency procedures reviewed; building manager contact provided to AED
+
+Next milestone: AED to have plantroom rough-in substantially complete by 21 Mar 2025.`,
+    attachments: [
+      { name: "Site Induction Register", sub: "PDF · 45 KB" },
+    ]
+  },
+  {
+    id: 4,
+    type: "email",
+    icon: "📧",
+    date: "24 February 2025",
+    time: "Afternoon (3:18pm)",
+    title: "Formal recommendation — AED Fire Protection for sprinkler upgrade",
+    subtitle: "Email · EBS Matthew → Charles Crist",
+    from: "Matthew Hoang <matthew@ebsfire.com.au>",
+    to: "Charles Crist <ccrist@stratalife.com.au>",
+    initiated: "Strata Manager (requested by Charles on 21 Feb)",
+    linkedTask: { label: "Award sprinkler upgrade contract to AED", id: "award-contract" },
+    emailBody: `Hi Charles,
+
+As requested, please find attached EBS's formal recommendation letter regarding the sprinkler upgrade tender.
+
+In summary:
+- AED's quote of $61,200 (incl. GST) is the preferred option. It is the lowest conforming tender and uniquely includes commissioning and hydraulic pressure testing within the fixed price.
+- EBS has worked with AED on three prior strata projects and found their work to be compliant and well-managed.
+- Incode's quote ($68,400) and EBS's own quote ($74,500, submitted for benchmark purposes only) are both higher and do not include commissioning.
+
+We are comfortable to endorse AED's appointment and are ready to act as superintendent from commencement.
+
+Please let us know once the contract is executed so we can coordinate a pre-commencement meeting.
+
+Kind regards,
+Matthew Hoang
+Project Engineer — EBS Fire Engineering`,
+    attachments: [
+      { name: "EBS Recommendation Letter — AED Appointment", sub: "PDF · 118 KB" },
+    ]
+  },
+  {
+    id: 5,
+    type: "meeting",
+    icon: "🤝",
+    date: "12 February 2025",
+    time: "Evening (7:00pm – 9:10pm)",
+    title: "EGM — special levy and AED contract resolutions",
+    subtitle: "In-person meeting · Common room, Queenscliff Gardens",
+    from: "—",
+    to: "—",
+    parties: "34 lots present or by proxy · Charles Crist (strata manager, chair)",
+    linkedTask: { label: "EGM — approve special levy for sprinkler upgrade", id: "egm" },
+    notes: `EGM called to put three resolutions to vote in respect of the Fire Order rectification works.
+
+Quorum: 34 of 40 lots represented (proxy forms received from 12 absentee owners).
+
+Resolutions:
+1. Special levy of $1,850/lot — CARRIED (34 for, 4 against, 2 abstained)
+2. Award contract to AED Fire Protection at $61,200 — CARRIED (unanimous)
+3. Retain EBS as superintendent/certifier (budget ≤$4,000) — CARRIED (unanimous)
+
+Key discussion points:
+- T. Kwan (Unit 3) asked about the $7,200 difference between AED and Incode quotes. Charles explained that AED's price includes commissioning; Incode's does not. EBS recommendation letter tabled.
+- F. O'Brien (Unit 34) asked about works disruption. Charles confirmed works expected 3 Mar – 2 May, 7am–5pm Mon–Fri only.
+- M. Reynolds (Unit 12) asked about the levy instalment schedule. Charles confirmed: instalment 1 due 28 Feb, instalment 2 due 30 Apr.
+
+Minutes to be issued within 7 days.`,
+    attachments: [
+      { name: "EGM Minutes — 12 Feb 2025", sub: "PDF · 142 KB" },
+      { name: "Proxy Forms (12 received)", sub: "PDF · 340 KB" },
+    ]
+  },
+  {
+    id: 6,
+    type: "phone",
+    icon: "📞",
+    date: "29 January 2025",
+    time: "Afternoon (approx. 2:00pm)",
+    title: "EBS (Johnny) — clarification on scope differences between quotes",
+    subtitle: "Phone call · Quote comparison",
+    from: "Charles Crist (Strata Manager)",
+    to: "Johnny Papadopoulos (EBS, Principal Engineer)",
+    initiated: "Strata Manager",
+    linkedTask: { label: "Obtain comparative quotes — sprinkler upgrade", id: "quotes" },
+    notes: `Charles called Johnny ahead of the owner circular to clarify a question likely to come up at the EGM.
+
+Key points discussed:
+- AED's quote ($61,200) includes commissioning and hydraulic pressure testing; Incode ($68,400) and EBS ($74,500) do not — add ~$6,000–$8,000 for those items
+- On an apples-to-apples basis AED is therefore approximately $14,000 cheaper than the next quote
+- EBS recommendation letter to formally state this distinction
+- Johnny confirmed EBS has worked with AED before; no concerns with their workmanship or compliance history
+
+Action: Charles to include commissioning note in the owner circular and ensure EBS recommendation letter addresses it explicitly (see 24 Feb email from Matthew).`,
+    attachments: []
+  },
+  {
+    id: 7,
+    type: "meeting",
+    icon: "🤝",
+    date: "18 January 2025",
+    time: "Evening (6:30pm – 8:15pm)",
+    title: "Committee meeting — quotes tabled, EGM date set",
+    subtitle: "In-person meeting · Committee room",
+    from: "—",
+    to: "—",
+    parties: "Committee (5 members) + Charles Crist",
+    linkedTask: { label: "Obtain comparative quotes — sprinkler upgrade", id: "quotes" },
+    notes: `Regular committee meeting. Fire Order was the primary agenda item.
+
+Three quotes tabled:
+- EBS: $74,500 (no commissioning)
+- AED: $61,200 (with commissioning) ← preferred
+- Incode: $68,400 (no commissioning)
+
+EBS recommendation discussed. Committee agreed AED is clearly the preferred tenderer once commissioning is accounted for.
+
+Decisions:
+- EGM to be called for 12 February 2025
+- All three quotes and EBS recommendation to be circulated to owners by 31 Jan
+- Charles to request a formal endorsement letter from EBS before the owner circular`,
+    attachments: []
+  },
+  {
+    id: 8,
+    type: "email",
+    icon: "📧",
+    date: "14 January 2025",
+    time: "Morning (11:22am)",
+    title: "Quote — sprinkler system upgrade ($68,400 incl. GST)",
+    subtitle: "Email · Incode Fire → Charles Crist",
+    from: "Sam Tran <stran@incodefire.com.au>",
+    to: "Charles Crist <ccrist@stratalife.com.au>",
+    initiated: "Incode",
+    linkedTask: { label: "Obtain comparative quotes — sprinkler upgrade", id: "quotes" },
+    emailBody: `Hi Charles,
+
+Please find attached our quotation for the sprinkler system upgrade at Queenscliff Gardens.
+
+Quote summary:
+- Supply and install upgraded sprinkler system per EBS scope of works
+- Plantroom pump set replacement and basement distribution pipework
+- Sprinkler heads — all floors
+- Total: $68,400 incl. GST
+
+Please note commissioning and hydraulic pressure testing are not included in this price and would be subject to a separate quotation.
+
+Our lead time from contract execution is approximately 6 weeks.
+
+Please feel free to call if you'd like to discuss.
+
+Regards,
+Sam Tran
+Incode Fire`,
+    attachments: [
+      { name: "Incode Quote INC-2025-0041", sub: "PDF · 226 KB" },
+    ]
+  },
+  {
+    id: 9,
+    type: "email",
+    icon: "📧",
+    date: "9 January 2025",
+    time: "Afternoon (4:47pm)",
+    title: "Quote — sprinkler system upgrade ($61,200 incl. GST, incl. commissioning)",
+    subtitle: "Email · AED Fire Protection → Charles Crist",
+    from: "Karen Bell <kbell@aedfire.com.au>",
+    to: "Charles Crist <ccrist@stratalife.com.au>",
+    initiated: "AED",
+    linkedTask: { label: "Obtain comparative quotes — sprinkler upgrade", id: "quotes" },
+    emailBody: `Hi Charles,
+
+Please find attached AED's quotation for the sprinkler upgrade works at Queenscliff Gardens per the EBS scope of works dated 4 September 2024.
+
+Quote summary:
+- Supply and install upgraded sprinkler system (plantroom pump set, basement and riser pipework, sprinkler heads all floors)
+- Hydraulic pressure testing
+- Full system commissioning and witnessing
+- All works per AS 2118.1 and in accordance with the EBS scope
+- Total: $61,200 incl. GST (fixed price, no exclusions for commissioning)
+
+We can commence within 4 weeks of contract execution. Our programme estimates 8 weeks on site.
+
+We have completed similar works at three strata schemes in the Northern Beaches over the past two years and are happy to provide references on request.
+
+Kind regards,
+Karen Bell
+Project Manager — AED Fire Protection`,
+    attachments: [
+      { name: "AED Quote AED-Q-2025-0009", sub: "PDF · 318 KB" },
+      { name: "AED Company Profile & References", sub: "PDF · 540 KB" },
+    ]
+  },
+];
+
+// ── Modal logic ───────────────────────────────────────────────────
+let currentModal = 0;
+
+function openModal(idx) {
+  currentModal = idx;
+  renderModal(idx);
+  document.getElementById("modal-backdrop").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("modal-backdrop").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById("modal-backdrop")) closeModal();
+}
+
+function navigateModal(dir) {
+  const next = currentModal + dir;
+  if (next >= 0 && next < LOG.length) {
+    currentModal = next;
+    renderModal(currentModal);
+  }
+}
+
+function renderModal(idx) {
+  const entry = LOG[idx];
+  document.getElementById("modal-icon").textContent = entry.icon;
+  document.getElementById("modal-title").textContent = entry.title;
+  document.getElementById("modal-subtitle").textContent = entry.subtitle;
+
+  // Meta bar
+  const metaBar = document.getElementById("modal-meta-bar");
+  const typeLabels = { email:"Email", phone:"Phone call", meeting:"Meeting" };
+  const timeChips  = { morning:"tc-morning", afternoon:"tc-afternoon", evening:"tc-evening" };
+  const timeClass  = entry.time.toLowerCase().includes("morning") ? "tc-morning"
+                   : entry.time.toLowerCase().includes("afternoon") ? "tc-afternoon"
+                   : entry.time.toLowerCase().includes("evening") ? "tc-evening" : "tc-allday";
+  metaBar.innerHTML = `
+    <div class="modal-meta-item"><div class="modal-meta-label">Type</div><div class="modal-meta-value">${typeLabels[entry.type] || entry.type}</div></div>
+    <div class="modal-meta-item"><div class="modal-meta-label">Date</div><div class="modal-meta-value">${entry.date}</div></div>
+    <div class="modal-meta-item"><div class="modal-meta-label">Time</div><div class="modal-meta-value"><span class="time-chip ${timeClass}" style="font-size:12px;">${entry.time.split(" ")[0]}</span></div></div>
+    ${entry.initiated ? `<div class="modal-meta-item"><div class="modal-meta-label">Initiated by</div><div class="modal-meta-value">${entry.initiated}</div></div>` : ""}
+  `;
+
+  // Body
+  const body = document.getElementById("modal-body");
+  let html = "";
+
+  // Parties
+  if (entry.type === "meeting") {
+    html += `<div class="modal-section">
+      <div class="modal-section-title">Attendees</div>
+      <div style="font-size:13px; color:#334155;">${entry.parties}</div>
+    </div>`;
+  } else if (entry.type !== "meeting") {
+    html += `<div class="modal-section">
+      <div class="modal-section-title">Parties</div>
+      <div style="font-size:13px; color:#334155; display:flex; flex-direction:column; gap:3px;">
+        ${entry.type === "email" ? `
+          <div class="email-field"><span class="email-field-label">From</span><span class="email-field-value">${entry.from}</span></div>
+          <div class="email-field"><span class="email-field-label">To</span><span class="email-field-value">${entry.to}</span></div>
+        ` : `
+          <div><strong>From:</strong> ${entry.from}</div>
+          <div><strong>To:</strong> ${entry.to}</div>
+        `}
+      </div>
+    </div>`;
+  }
+
+  // Content
+  if (entry.emailBody) {
+    html += `<div class="modal-section">
+      <div class="modal-section-title">Email content</div>
+      <div class="email-body">${escapeHtml(entry.emailBody)}</div>
+    </div>`;
+  } else if (entry.notes) {
+    const cls = entry.type === "meeting" ? "meeting-notes" : "call-notes";
+    html += `<div class="modal-section">
+      <div class="modal-section-title">${entry.type === "meeting" ? "Meeting notes" : "Call notes"}</div>
+      <div class="${cls}">${escapeHtml(entry.notes)}</div>
+    </div>`;
+  }
+
+  // Attachments
+  if (entry.attachments && entry.attachments.length) {
+    html += `<div class="modal-section">
+      <div class="modal-section-title">Attachments (${entry.attachments.length})</div>
+      <ul class="modal-attachment-list">
+        ${entry.attachments.map(a => `
+          <li class="modal-attachment-item">
+            <span style="font-size:16px;">📎</span>
+            <div>
+              <div><a href="#">${a.name}</a></div>
+              <div class="modal-attachment-sub">${a.sub}</div>
+            </div>
+          </li>
+        `).join("")}
+      </ul>
+    </div>`;
+  }
+
+  // Linked task
+  if (entry.linkedTask) {
+    html += `<div class="modal-section">
+      <div class="modal-section-title">Related task</div>
+      <div class="modal-linked-task" onclick="closeModal(); scrollToTask('${entry.linkedTask.id}')">
+        <span style="font-size:16px;">📋</span>
+        <span style="flex:1; font-size:13px;">${entry.linkedTask.label}</span>
+        <span style="color:#94a3b8; font-size:12px;">View →</span>
+      </div>
+    </div>`;
+  }
+
+  body.innerHTML = html;
+
+  // Nav buttons
+  document.getElementById("modal-prev").disabled = idx === 0;
+  document.getElementById("modal-next").disabled = idx === LOG.length - 1;
+  document.getElementById("modal-count").textContent = `${idx + 1} of ${LOG.length}`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+function scrollToTask(taskId) {
+  const el = document.querySelector(`[data-task="${taskId}"]`);
+  if (el) {
+    el.classList.add("open");
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+// ── Task expand/collapse ──────────────────────────────────────────
+document.querySelectorAll(".task-item").forEach(item => {
+  item.querySelector(".task-row").addEventListener("click", () => {
+    item.classList.toggle("open");
+  });
+});
+
+// Close modal on Escape
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+  if (e.key === "ArrowLeft")  navigateModal(-1);
+  if (e.key === "ArrowRight") navigateModal(1);
+});
+</script>
+</body>
+</html>
