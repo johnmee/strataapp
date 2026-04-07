@@ -35,4 +35,9 @@ server {
     	autoindex on;
     	types { text/html html; application/pdf; }
     }
+
+    location /blog/ {
+        alias /home/john/strataapp/blog/public/;
+        index index.html;
+    }
 }
