@@ -1,4 +1,11 @@
-# Redirect apex to www
+# Redirect http www to https
+server {
+    server_name www.strata.properties;
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+# Redirect apex domain to www
 server {
     server_name strata.properties;
     listen 80; # managed by Certbot
@@ -10,14 +17,7 @@ server {
     return 301 https://www.strata.properties$request_uri;
 }
 
-# Redirect http www to https
-server {
-    server_name www.strata.properties;
-    listen 80;
-    return 301 https://$host$request_uri;
-}
-
-# Serve www.strata.properties over https
+# Serve www.strata.properties
 server {
     server_name www.strata.properties;
     listen 443;
@@ -27,15 +27,19 @@ server {
     access_log /var/log/nginx/strataapp-access.log;
     error_log /var/log/nginx/strataapp-error.log;
 
-    root /home/john/strataapp/src/;
-    index index.html;
-
-    location ~ \.git/ { deny all; return 404; }
+    # Proxy Django app to ASGI server
     location / {
-    	autoindex on;
-    	types { text/html html; application/pdf; }
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
+    # Keep static blog serving
     location /blog/ {
         alias /home/john/strataapp/blog/public/;
         index index.html;
