@@ -3,16 +3,16 @@ Description=Strata App Django ASGI Server
 After=network.target
 
 [Service]
-Type=notify
-User=www-data
-Group=www-data
-WorkingDirectory=/home/john/strataapp/app/strataapp
-EnvironmentFile=/home/john/strataapp.env
+User=strataapp
+Group=strataapp
+WorkingDirectory=/opt/strataapp/repo/app/strataapp
+EnvironmentFile=/etc/strataapp/strataapp.env
 
-ExecStart=/usr/bin/uvicorn strataapp.asgi:application \
+ExecStart=/opt/strataapp/repo/app/.venv/bin/uvicorn strataapp.asgi:application \
     --host 127.0.0.1 \
     --port 8000 \
-    --workers 4
+    --workers 4 \
+    --lifespan off
 
 # Process management
 Restart=always
@@ -23,6 +23,8 @@ StartLimitBurst=3
 # Security
 PrivateTmp=true
 NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/strataapp/repo
 StandardOutput=journal
 StandardError=journal
 

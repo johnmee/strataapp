@@ -41,7 +41,7 @@ server {
 
     # Keep static blog serving
     location /blog/ {
-        alias /home/john/strataapp/blog/public/;
+        alias /opt/strataapp/repo/blog/public/;
         index index.html;
     }
 }
