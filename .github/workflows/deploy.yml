@@ -29,12 +29,13 @@ jobs:
       - name: Sync blog to production
         run: |
           rsync -az --delete \
+            -e "ssh -p ${{ secrets.DEPLOY_PORT }}" \
             blog/public/ \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/strataapp/repo/blog/public/
 
       - name: Pull latest code and restart
         run: |
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} '
+          ssh -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} '
             cd /opt/strataapp/repo &&
             git pull &&
             /opt/strataapp/.local/bin/uv sync --project app &&
