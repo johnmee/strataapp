@@ -1,3 +1,4 @@
+import datetime
 import pytest
 
 
@@ -5,3 +6,40 @@ import pytest
 def test_tracker_app_installed():
     from django.apps import apps
     assert apps.is_installed("tracker")
+
+
+@pytest.mark.django_db
+def test_building_str_returns_name():
+    from tracker.models import Building
+    b = Building.objects.create(name="Acacia Gardens", address="1 Test St", slug="acacia-gardens")
+    assert str(b) == "Acacia Gardens"
+
+
+@pytest.mark.django_db
+def test_building_slug_must_be_unique():
+    from django.db import IntegrityError
+    from tracker.models import Building
+    Building.objects.create(name="A", address="a", slug="dup")
+    with pytest.raises(IntegrityError):
+        Building.objects.create(name="B", address="b", slug="dup")
+
+
+@pytest.mark.django_db
+def test_organisation_str_returns_name():
+    from tracker.models import Organisation
+    o = Organisation.objects.create(name="Acme Plumbing")
+    assert str(o) == "Acme Plumbing"
+
+
+@pytest.mark.django_db
+def test_engagement_has_nullable_to_date():
+    from tracker.models import Building, Engagement, Organisation
+    o = Organisation.objects.create(name="Acme Strata")
+    b = Building.objects.create(name="A", address="a", slug="a")
+    e = Engagement.objects.create(
+        organisation=o,
+        building=b,
+        service="Strata Manager",
+        from_date=datetime.date(2024, 1, 1),
+    )
+    assert e.to_date is None
