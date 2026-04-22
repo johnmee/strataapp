@@ -18,3 +18,9 @@ def organisation(db):
 @pytest.fixture
 def today():
     return datetime.date(2026, 4, 17)
+
+
+@pytest.fixture
+def parcel(db, building):
+    from tracker.models import Parcel
+    return Parcel.objects.create(building=building, name="Lot 1", area_type="private")

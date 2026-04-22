@@ -43,3 +43,24 @@ def test_engagement_has_nullable_to_date():
         from_date=datetime.date(2024, 1, 1),
     )
     assert e.to_date is None
+
+
+@pytest.mark.django_db
+def test_parcel_str_includes_area_type(building):
+    from tracker.models import Parcel
+    p = Parcel.objects.create(building=building, name="Lot 5", area_type="private")
+    assert "Lot 5" in str(p)
+
+
+@pytest.mark.django_db
+def test_parcel_area_type_choices(building):
+    from tracker.models import Parcel
+    p = Parcel.objects.create(building=building, name="Roof", area_type="common")
+    assert p.get_area_type_display() == "Common"
+
+
+@pytest.mark.django_db
+def test_tag_str_returns_name(building):
+    from tracker.models import Tag
+    t = Tag.objects.create(building=building, name="Plumbing", slug="plumbing")
+    assert str(t) == "Plumbing"
