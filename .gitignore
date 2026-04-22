@@ -2,3 +2,4 @@
 .claude/
 blog/public/
 app/strataapp/db.sqlite3
+app/strataapp/media/

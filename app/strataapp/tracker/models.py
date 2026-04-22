@@ -1,3 +1,5 @@
+import mimetypes
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -187,3 +189,27 @@ class Event(models.Model):
         primary = self.contacts.first() if self.pk else None
         contact_name = primary.display_name() if primary else "Unknown"
         return f"{self.get_event_type_display()} · {contact_name} · {self.date.strftime('%d %b %Y')}"
+
+
+class Document(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="documents")
+    file = models.FileField(upload_to="documents/%Y/%m/")
+    title = models.CharField(max_length=300)
+    mimetype = models.CharField(max_length=100, blank=True)
+    file_size = models.PositiveIntegerField(null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if self.file and not self.mimetype:
+            guessed, _ = mimetypes.guess_type(self.file.name)
+            if guessed:
+                self.mimetype = guessed
+        if self.file and self.file_size is None:
+            try:
+                self.file_size = self.file.size
+            except (OSError, ValueError):
+                self.file_size = None
+        super().save(*args, **kwargs)

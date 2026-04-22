@@ -248,3 +248,16 @@ def test_issue_urgency_active_with_recent_occurred_event(building, contact, issu
     e.contacts.add(contact)
     e.issues.add(issue)
     assert issue.urgency_state == "active"
+
+
+@pytest.mark.django_db
+def test_document_auto_detects_mimetype_and_size(building, contact):
+    from django.core.files.uploadedfile import SimpleUploadedFile
+    from django.utils import timezone
+    from tracker.models import Document, Event
+    e = Event.objects.create(building=building, event_type="email", date=timezone.now())
+    e.contacts.add(contact)
+    upload = SimpleUploadedFile("report.pdf", b"%PDF-1.4 fake content", content_type="application/pdf")
+    d = Document.objects.create(event=e, title="Site report", file=upload)
+    assert d.mimetype == "application/pdf"
+    assert d.file_size == len(b"%PDF-1.4 fake content")
