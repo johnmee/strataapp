@@ -36,3 +36,9 @@ def contact(db):
 def org_office_contact(db, organisation):
     from tracker.models import Contact
     return Contact.objects.create(name="", organisation=organisation)
+
+
+@pytest.fixture
+def issue(db, building):
+    from tracker.models import Issue
+    return Issue.objects.create(building=building, title="Fix roof leak")

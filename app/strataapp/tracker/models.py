@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class Building(models.Model):
@@ -104,3 +105,33 @@ class Tenure(models.Model):
 
     def __str__(self):
         return f"{self.contact.display_name()} · {self.get_role_display()} · {self.parcel.name}"
+
+
+class Issue(models.Model):
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="issues")
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name="issues")
+    parcels = models.ManyToManyField(Parcel, blank=True, related_name="issues")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def urgency_state(self):
+        if self.completed_at is not None:
+            return "done"
+        if not self.pk:
+            return "idle"
+        now = timezone.now()
+        try:
+            active_events = self.events.filter(cancelled=False)
+        except AttributeError:
+            return "idle"
+        if active_events.filter(date__gt=now).exists():
+            return "waiting"
+        if active_events.filter(date__lte=now).exists():
+            return "active"
+        return "idle"

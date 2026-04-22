@@ -127,3 +127,25 @@ def test_tenure_not_current_when_to_date_set(contact, parcel):
         to_date=datetime.date(2022, 1, 1),
     )
     assert t.is_current is False
+
+
+@pytest.mark.django_db
+def test_issue_urgency_done_when_completed(building):
+    from django.utils import timezone
+    from tracker.models import Issue
+    i = Issue.objects.create(building=building, title="Fix roof", completed_at=timezone.now())
+    assert i.urgency_state == "done"
+
+
+@pytest.mark.django_db
+def test_issue_urgency_idle_when_no_events(building):
+    from tracker.models import Issue
+    i = Issue.objects.create(building=building, title="Paint lobby")
+    assert i.urgency_state == "idle"
+
+
+@pytest.mark.django_db
+def test_issue_str_returns_title(building):
+    from tracker.models import Issue
+    i = Issue.objects.create(building=building, title="Fix lift")
+    assert str(i) == "Fix lift"
