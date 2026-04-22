@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tracker.models import Building, Engagement, Organisation, Parcel, Tag
+from tracker.models import Building, Contact, Engagement, Organisation, Parcel, Tag, Tenure
 
 
 @admin.register(Building)
@@ -35,3 +35,17 @@ class ParcelAdmin(admin.ModelAdmin):
     list_display = ("name", "building", "area_type")
     list_filter = ("building", "area_type")
     search_fields = ("name",)
+
+
+class TenureInline(admin.TabularInline):
+    model = Tenure
+    extra = 0
+    fields = ("parcel", "role", "from_date", "to_date")
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ("display_name", "email", "phone", "organisation", "hidden")
+    list_filter = ("hidden", "organisation")
+    search_fields = ("name", "phone", "email", "organisation__name")
+    inlines = [TenureInline]
