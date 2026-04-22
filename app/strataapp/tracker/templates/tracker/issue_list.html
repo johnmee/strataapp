@@ -1,0 +1,29 @@
+{% extends "tracker/base.html" %}
+{% block title %}Issues — Strata Tracker{% endblock %}
+{% block content %}
+<h2>Issues</h2>
+{% if issues %}
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>State</th>
+            <th>Tags</th>
+            <th>Last activity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in issues %}
+        <tr>
+            <td>{{ issue.title }}</td>
+            <td><span class="badge badge-{{ issue.urgency_state }}">{{ issue.urgency_state }}</span></td>
+            <td>{% for tag in issue.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{% with last=issue.events.all|dictsort:"date"|last %}{% if last %}{{ last.date|date:"Y-m-d" }}{% endif %}{% endwith %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No issues yet.</p>
+{% endif %}
+{% endblock %}
