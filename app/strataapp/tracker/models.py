@@ -85,3 +85,22 @@ class Contact(models.Model):
     def clean(self):
         if not self.name and not self.organisation_id:
             raise ValidationError("Contact must have a name or be linked to an organisation.")
+
+
+class Tenure(models.Model):
+    ROLE_CHOICES = [
+        ("owner", "Owner"),
+        ("tenant", "Tenant"),
+    ]
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="tenures")
+    parcel = models.ForeignKey(Parcel, on_delete=models.CASCADE, related_name="tenures")
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    from_date = models.DateField()
+    to_date = models.DateField(null=True, blank=True)
+
+    @property
+    def is_current(self):
+        return self.to_date is None
+
+    def __str__(self):
+        return f"{self.contact.display_name()} · {self.get_role_display()} · {self.parcel.name}"

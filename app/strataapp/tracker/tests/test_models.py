@@ -101,3 +101,29 @@ def test_contact_validation_allows_org_only(organisation):
     from tracker.models import Contact
     c = Contact(organisation=organisation)
     c.full_clean()  # no exception
+
+
+@pytest.mark.django_db
+def test_tenure_current_when_to_date_null(contact, parcel):
+    from tracker.models import Tenure
+    t = Tenure.objects.create(
+        contact=contact,
+        parcel=parcel,
+        role="owner",
+        from_date=datetime.date(2020, 1, 1),
+    )
+    assert t.to_date is None
+    assert t.is_current is True
+
+
+@pytest.mark.django_db
+def test_tenure_not_current_when_to_date_set(contact, parcel):
+    from tracker.models import Tenure
+    t = Tenure.objects.create(
+        contact=contact,
+        parcel=parcel,
+        role="tenant",
+        from_date=datetime.date(2020, 1, 1),
+        to_date=datetime.date(2022, 1, 1),
+    )
+    assert t.is_current is False
