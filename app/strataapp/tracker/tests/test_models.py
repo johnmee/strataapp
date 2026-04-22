@@ -64,3 +64,40 @@ def test_tag_str_returns_name(building):
     from tracker.models import Tag
     t = Tag.objects.create(building=building, name="Plumbing", slug="plumbing")
     assert str(t) == "Plumbing"
+
+
+@pytest.mark.django_db
+def test_contact_display_name_returns_name_when_present():
+    from tracker.models import Contact
+    c = Contact(name="Jane Doe")
+    assert c.display_name() == "Jane Doe"
+
+
+@pytest.mark.django_db
+def test_contact_display_name_falls_back_to_org_office(organisation):
+    from tracker.models import Contact
+    c = Contact(name="", organisation=organisation)
+    assert c.display_name() == "Acme Plumbing (office)"
+
+
+@pytest.mark.django_db
+def test_contact_validation_requires_name_or_organisation():
+    from django.core.exceptions import ValidationError
+    from tracker.models import Contact
+    c = Contact(name="", organisation=None)
+    with pytest.raises(ValidationError):
+        c.full_clean()
+
+
+@pytest.mark.django_db
+def test_contact_validation_allows_name_only():
+    from tracker.models import Contact
+    c = Contact(name="Jane Doe")
+    c.full_clean()  # no exception
+
+
+@pytest.mark.django_db
+def test_contact_validation_allows_org_only(organisation):
+    from tracker.models import Contact
+    c = Contact(organisation=organisation)
+    c.full_clean()  # no exception

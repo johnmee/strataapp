@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -56,3 +58,30 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Contact(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=50, blank=True)
+    organisation = models.ForeignKey(
+        Organisation, null=True, blank=True, on_delete=models.SET_NULL, related_name="contacts"
+    )
+    hidden = models.BooleanField(default=False)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="contact"
+    )
+
+    def __str__(self):
+        return self.display_name()
+
+    def display_name(self):
+        if self.name:
+            return self.name
+        if self.organisation_id:
+            return f"{self.organisation.name} (office)"
+        return "Unknown"
+
+    def clean(self):
+        if not self.name and not self.organisation_id:
+            raise ValidationError("Contact must have a name or be linked to an organisation.")

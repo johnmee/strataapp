@@ -24,3 +24,15 @@ def today():
 def parcel(db, building):
     from tracker.models import Parcel
     return Parcel.objects.create(building=building, name="Lot 1", area_type="private")
+
+
+@pytest.fixture
+def contact(db):
+    from tracker.models import Contact
+    return Contact.objects.create(name="Jane Doe", email="jane@example.test")
+
+
+@pytest.fixture
+def org_office_contact(db, organisation):
+    from tracker.models import Contact
+    return Contact.objects.create(name="", organisation=organisation)
