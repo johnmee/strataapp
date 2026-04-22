@@ -1,0 +1,54 @@
+{% extends "tracker/base.html" %}
+{% block title %}{{ issue.title }} — Strata Tracker{% endblock %}
+{% block content %}
+<p><a href="{% url 'tracker:issue_list' %}">&larr; All issues</a></p>
+
+<h2>{{ issue.title }}</h2>
+<p><span class="badge badge-{{ issue.urgency_state }}">{{ issue.urgency_state }}</span></p>
+
+{% if issue.description %}<p>{{ issue.description|linebreaks }}</p>{% endif %}
+
+{% if issue.tags.all %}
+<p><strong>Tags:</strong>
+{% for tag in issue.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+</p>
+{% endif %}
+
+{% if issue.parcels.all %}
+<p><strong>Parcels:</strong>
+{% for p in issue.parcels.all %}{{ p.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+</p>
+{% endif %}
+
+<h3>Event timeline</h3>
+{% if events %}
+<ul>
+{% for e in events %}
+<li>
+    <strong>{{ e.date|date:"Y-m-d H:i" }}</strong> ·
+    <span class="badge badge-{{ e.derived_state }}">{{ e.derived_state }}</span> ·
+    {{ e.get_event_type_display }}
+    {% if e.duration %} ({{ e.duration }}){% endif %}
+    <br>
+    <em>
+    {% for c in e.contacts.all %}{% if not c.hidden %}{{ c.display_name }}{% else %}(hidden){% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}
+    </em>
+    {% if e.description %}<br>{{ e.description|linebreaks }}{% endif %}
+    {% if e.parcels.all %}
+    <br><small>Parcels: {% for p in e.parcels.all %}{{ p.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+    {% endif %}
+    {% if e.documents.all %}
+    <br><small>Documents:
+    {% for d in e.documents.all %}<a href="{{ d.file.url }}">{{ d.title }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+    </small>
+    {% endif %}
+    {% if e.rescheduled_to.all %}
+    <br><small>Rescheduled to event #{{ e.rescheduled_to.first.pk }}</small>
+    {% endif %}
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No events logged for this issue yet.</p>
+{% endif %}
+{% endblock %}
