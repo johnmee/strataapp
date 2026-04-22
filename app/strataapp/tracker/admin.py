@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tracker.models import Building, Contact, Engagement, Organisation, Parcel, Tag, Tenure
+from tracker.models import Building, Contact, Engagement, Issue, Organisation, Parcel, Tag, Tenure
 
 
 @admin.register(Building)
@@ -49,3 +49,58 @@ class ContactAdmin(admin.ModelAdmin):
     list_filter = ("hidden", "organisation")
     search_fields = ("name", "phone", "email", "organisation__name")
     inlines = [TenureInline]
+
+
+class UrgencyStateListFilter(admin.SimpleListFilter):
+    title = "urgency"
+    parameter_name = "urgency"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("done", "Done"),
+            ("overdue", "Overdue"),
+            ("waiting", "Waiting"),
+            ("active", "Active"),
+            ("idle", "Idle"),
+        ]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if not value:
+            return queryset
+        ids = [i.pk for i in queryset if i.urgency_state == value]
+        return queryset.filter(pk__in=ids)
+
+
+@admin.register(Issue)
+class IssueAdmin(admin.ModelAdmin):
+    list_display = ("title", "building", "urgency_state", "completed_at", "created_at")
+    list_filter = (UrgencyStateListFilter, "building", "tags")
+    search_fields = ("title", "description")
+    filter_horizontal = ("tags", "parcels")
+    readonly_fields = ("created_at", "urgency_state", "linked_events_html")
+    fieldsets = (
+        (None, {"fields": ("building", "title", "description")}),
+        ("Classification", {"fields": ("tags", "parcels")}),
+        ("Status", {"fields": ("completed_at", "urgency_state", "created_at")}),
+        ("Events", {"fields": ("linked_events_html",)}),
+    )
+
+    def linked_events_html(self, obj):
+        from django.utils.html import format_html, format_html_join
+        if not obj.pk:
+            return "—"
+        events = obj.events.order_by("-date")
+        if not events.exists():
+            return "No events linked yet."
+        rows = format_html_join(
+            "",
+            "<li>{} · <strong>{}</strong> · {}</li>",
+            (
+                (e.date.strftime("%Y-%m-%d %H:%M"), e.derived_state, e.display_title)
+                for e in events
+            ),
+        )
+        return format_html("<ul>{}</ul>", rows)
+
+    linked_events_html.short_description = "Event timeline"

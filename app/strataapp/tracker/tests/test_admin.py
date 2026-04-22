@@ -45,3 +45,30 @@ def test_contact_admin_search_by_organisation_name(admin_client, organisation):
     response = admin_client.get("/admin/tracker/contact/?q=Acme")
     assert response.status_code == 200
     assert b"Jane" in response.content
+
+
+@pytest.mark.django_db
+def test_issue_admin_changelist_loads(admin_client):
+    response = admin_client.get("/admin/tracker/issue/")
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_issue_admin_shows_urgency_column(admin_client, building):
+    from tracker.models import Issue
+    Issue.objects.create(building=building, title="Fix roof")
+    response = admin_client.get("/admin/tracker/issue/")
+    assert response.status_code == 200
+    assert b"idle" in response.content  # urgency label appears
+
+
+@pytest.mark.django_db
+def test_issue_admin_filter_by_urgency_done(admin_client, building):
+    from django.utils import timezone
+    from tracker.models import Issue
+    Issue.objects.create(building=building, title="Open item")
+    Issue.objects.create(building=building, title="Closed item", completed_at=timezone.now())
+    response = admin_client.get("/admin/tracker/issue/?urgency=done")
+    assert response.status_code == 200
+    assert b"Closed item" in response.content
+    assert b"Open item" not in response.content
