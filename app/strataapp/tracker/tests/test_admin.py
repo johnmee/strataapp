@@ -72,3 +72,23 @@ def test_issue_admin_filter_by_urgency_done(admin_client, building):
     assert response.status_code == 200
     assert b"Closed item" in response.content
     assert b"Open item" not in response.content
+
+
+@pytest.mark.django_db
+def test_event_admin_changelist_loads(admin_client):
+    response = admin_client.get("/admin/tracker/event/")
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_event_admin_shows_derived_state(admin_client, event):
+    response = admin_client.get("/admin/tracker/event/")
+    assert response.status_code == 200
+    assert b"occurred" in response.content or b"planned" in response.content
+
+
+@pytest.mark.django_db
+def test_event_admin_change_page_shows_derived_state_readonly(admin_client, event):
+    response = admin_client.get(f"/admin/tracker/event/{event.pk}/change/")
+    assert response.status_code == 200
+    assert b"Derived state" in response.content or b"derived state" in response.content.lower()

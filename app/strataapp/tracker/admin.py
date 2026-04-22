@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from tracker.models import Building, Contact, Engagement, Issue, Organisation, Parcel, Tag, Tenure
+from tracker.models import Building, Contact, Document, Engagement, Event, Issue, Organisation, Parcel, Tag, Tenure
 
 
 @admin.register(Building)
@@ -104,3 +104,26 @@ class IssueAdmin(admin.ModelAdmin):
         return format_html("<ul>{}</ul>", rows)
 
     linked_events_html.short_description = "Event timeline"
+
+
+class DocumentInline(admin.TabularInline):
+    model = Document
+    extra = 0
+    fields = ("title", "file", "mimetype", "file_size", "uploaded_at")
+    readonly_fields = ("mimetype", "file_size", "uploaded_at")
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ("display_title", "building", "event_type", "date", "derived_state")
+    list_filter = ("building", "event_type", "cancelled")
+    search_fields = ("title", "description")
+    filter_horizontal = ("issues", "contacts", "parcels")
+    readonly_fields = ("created_at", "derived_state")
+    fieldsets = (
+        (None, {"fields": ("building", "title", "event_type", "date", "duration", "description")}),
+        ("State", {"fields": ("cancelled", "rescheduled_from", "derived_state")}),
+        ("Links", {"fields": ("issues", "contacts", "parcels")}),
+        ("Meta", {"fields": ("created_at",)}),
+    )
+    inlines = [DocumentInline]
