@@ -42,3 +42,12 @@ def org_office_contact(db, organisation):
 def issue(db, building):
     from tracker.models import Issue
     return Issue.objects.create(building=building, title="Fix roof leak")
+
+
+@pytest.fixture
+def event(db, building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    e = Event.objects.create(building=building, event_type="meeting", date=timezone.now())
+    e.contacts.add(contact)
+    return e

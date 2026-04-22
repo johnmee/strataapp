@@ -149,3 +149,102 @@ def test_issue_str_returns_title(building):
     from tracker.models import Issue
     i = Issue.objects.create(building=building, title="Fix lift")
     assert str(i) == "Fix lift"
+
+
+@pytest.mark.django_db
+def test_event_state_planned_when_future(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    future = timezone.now() + datetime.timedelta(days=3)
+    e = Event.objects.create(building=building, event_type="meeting", date=future)
+    e.contacts.add(contact)
+    assert e.derived_state == "planned"
+
+
+@pytest.mark.django_db
+def test_event_state_occurred_when_past(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    past = timezone.now() - datetime.timedelta(days=3)
+    e = Event.objects.create(building=building, event_type="meeting", date=past)
+    e.contacts.add(contact)
+    assert e.derived_state == "occurred"
+
+
+@pytest.mark.django_db
+def test_event_state_cancelled(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    e = Event.objects.create(
+        building=building, event_type="meeting", date=timezone.now(), cancelled=True
+    )
+    e.contacts.add(contact)
+    assert e.derived_state == "cancelled"
+
+
+@pytest.mark.django_db
+def test_event_state_rescheduled_when_another_event_points_to_it(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    old = Event.objects.create(building=building, event_type="meeting", date=timezone.now())
+    old.contacts.add(contact)
+    new = Event.objects.create(
+        building=building,
+        event_type="meeting",
+        date=timezone.now() + datetime.timedelta(days=7),
+        rescheduled_from=old,
+    )
+    new.contacts.add(contact)
+    assert old.derived_state == "rescheduled"
+
+
+@pytest.mark.django_db
+def test_event_display_title_auto_generated(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    e = Event.objects.create(
+        building=building,
+        event_type="phone_call",
+        date=timezone.datetime(2026, 4, 17, 10, 0, tzinfo=datetime.timezone.utc),
+    )
+    e.contacts.add(contact)
+    t = e.display_title
+    assert "Phone Call" in t
+    assert "Jane Doe" in t
+    assert "2026" in t
+
+
+@pytest.mark.django_db
+def test_event_display_title_uses_explicit_title_when_set(building, contact):
+    from django.utils import timezone
+    from tracker.models import Event
+    e = Event.objects.create(
+        building=building,
+        event_type="meeting",
+        title="AGM Q1 2026",
+        date=timezone.now(),
+    )
+    e.contacts.add(contact)
+    assert e.display_title == "AGM Q1 2026"
+
+
+@pytest.mark.django_db
+def test_issue_urgency_waiting_with_future_planned_event(building, contact, issue):
+    from django.utils import timezone
+    from tracker.models import Event
+    future = timezone.now() + datetime.timedelta(days=3)
+    e = Event.objects.create(building=building, event_type="meeting", date=future)
+    e.contacts.add(contact)
+    e.issues.add(issue)
+    assert issue.urgency_state == "waiting"
+
+
+@pytest.mark.django_db
+def test_issue_urgency_active_with_recent_occurred_event(building, contact, issue):
+    from django.utils import timezone
+    from tracker.models import Event
+    past = timezone.now() - datetime.timedelta(days=3)
+    e = Event.objects.create(building=building, event_type="meeting", date=past)
+    e.contacts.add(contact)
+    e.issues.add(issue)
+    assert issue.urgency_state == "active"

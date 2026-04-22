@@ -126,12 +126,64 @@ class Issue(models.Model):
         if not self.pk:
             return "idle"
         now = timezone.now()
-        try:
-            active_events = self.events.filter(cancelled=False)
-        except AttributeError:
-            return "idle"
+        active_events = self.events.filter(cancelled=False)
         if active_events.filter(date__gt=now).exists():
             return "waiting"
         if active_events.filter(date__lte=now).exists():
             return "active"
         return "idle"
+
+
+class Event(models.Model):
+    EVENT_TYPE_CHOICES = [
+        ("phone_call", "Phone Call"),
+        ("email", "Email"),
+        ("meeting", "Meeting"),
+        ("conversation", "Conversation"),
+        ("notice", "Notice"),
+        ("work", "Work"),
+        ("observation", "Observation"),
+        ("other", "Other"),
+    ]
+    building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name="events")
+    title = models.CharField(max_length=300, blank=True)
+    description = models.TextField(blank=True)
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES)
+    cancelled = models.BooleanField(default=False)
+    date = models.DateTimeField()
+    duration = models.DurationField(null=True, blank=True)
+    rescheduled_from = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="rescheduled_to",
+    )
+    issues = models.ManyToManyField(Issue, blank=True, related_name="events")
+    contacts = models.ManyToManyField(Contact, blank=True, related_name="events")
+    parcels = models.ManyToManyField(Parcel, blank=True, related_name="events")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+
+    def __str__(self):
+        return self.display_title
+
+    @property
+    def derived_state(self):
+        if self.pk and self.rescheduled_to.exists():
+            return "rescheduled"
+        if self.cancelled:
+            return "cancelled"
+        if self.date > timezone.now():
+            return "planned"
+        return "occurred"
+
+    @property
+    def display_title(self):
+        if self.title:
+            return self.title
+        primary = self.contacts.first() if self.pk else None
+        contact_name = primary.display_name() if primary else "Unknown"
+        return f"{self.get_event_type_display()} · {contact_name} · {self.date.strftime('%d %b %Y')}"
