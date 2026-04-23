@@ -212,3 +212,45 @@ a {
   height: 100px;
   flex-shrink: 0;
 }
+
+/* Code blocks */
+.post-content pre {
+  background: var(--gutter);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.post-content pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--text);
+  white-space: pre;
+}
+
+/* Figures and images */
+.post-content figure {
+  margin: 1.5rem 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.post-content figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-content figcaption {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0.2rem 0 0 0;
+  text-align: right;
+}
+
+.post-content figcaption p {
+  margin: 0;
+}
