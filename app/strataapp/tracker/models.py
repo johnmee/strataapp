@@ -178,7 +178,7 @@ class Event(models.Model):
             return "rescheduled"
         if self.cancelled:
             return "cancelled"
-        if self.date > timezone.now():
+        if self.date and self.date > timezone.now():
             return "planned"
         return "occurred"
 
