@@ -9,9 +9,9 @@ Everyone says, quite rightly, before you buy into a strata you must obtain (even
 
 Working against that are many forces which would prefer you execute the purchase without knowing any of those things.  The seller and their real estate agent would prefer you stay in the dark so you don't get cold feet and don't have any ammunition to soften your bid.  The Owners, generally, would prefer you not have a clear view for the same reason; they are conscious that the price you pay will reflect on the valuation of their unit.  And the, supposedly independent, company offering the Strata Report doesn't really want you to discover any gremlins because they want more business from these Real Estate agents and don't want exposure to a lawsuit for putting people off.
 
-Oddly enough, it's really only the Strata Manager who doesn't really care, or even inclined that you do know the whole story; so they don't have to endure outrage of the new owners when things become clear.  But they won't talk to you for fear of upsetting any of the above people whom they have to work with on a daily basis.
+Oddly enough, it's really only the Strata Manager who doesn't really care, or even inclined that you do know the whole story; so they don't have to endure the outrage of the new owners when negatives become more clear.  But, that motive is not strong enough to overcome the fear of irritating the hands that feed them, so they simply won't talk to you at all.
 
-But I have a modern solution: the LLM (or 'ChatGPT') has no skin in the game (yet).  It has no motivation to sugar coat it for you and will not.  This is the best way I have discovered to 'read between the lines' of a 'strata report' and get some negative, or realistic, feedback.
+But we have a modern solution: the LLM (or 'ChatGPT') has no skin in the game (yet) and no motivation to sugar coat it for you.  This is the best way I have discovered to 'read between the lines' of a 'strata report' and get some negative, or objective, feedback.
 
 1. Get the strata report:
 2. Feed the strata report into an LLM (ie ChatGPT, Claude, Copilot, Grok, llama, etc.) for evaluation.  

@@ -232,25 +232,25 @@ a {
 }
 
 /* Figures and images */
-.post-content figure {
+figure {
   margin: 1.5rem 0;
   max-width: 100%;
   overflow: hidden;
 }
 
-.post-content figure img {
+figure img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-.post-content figcaption {
+figcaption {
   color: var(--muted);
   font-size: 0.85rem;
   margin: 0.2rem 0 0 0;
   text-align: right;
 }
 
-.post-content figcaption p {
+figcaption p {
   margin: 0;
 }
