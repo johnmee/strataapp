@@ -1,5 +1,5 @@
 .hugo_build.lock
 .claude/
 blog/public/
-app/strataapp/db.sqlite3
+db.sqlite3
 app/strataapp/media/
