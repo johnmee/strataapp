@@ -34,7 +34,7 @@ Cross-reference every available document — strata reports, by-laws, AGM and co
 
 Before beginning the analysis, read every uploaded document. As you do:
 
-- **Exclude irrelevant pages.** Strata reports sometimes contain misfiled pages from a different strata plan, duplicate pages, or documents unrelated to the subject building or lot. Silently discard these. If an entire document appears to relate to a different scheme, note it in the document inventory and exclude it from the analysis.
+- **Exclude irrelevant pages.** Strata reports sometimes contain misfiled pages from a different strata plan, duplicate pages, or documents unrelated to the subject building or lot. Disregard these. If an entire document appears to relate to a different scheme, note it in the document inventory and exclude it from the analysis.
 - **Note the date, author, and type of each document.** You will list these in the document inventory immediately after the executive summary.
 
 ## LENGTH AND DENSITY
@@ -92,10 +92,10 @@ Score across these weighted domains with a one-line rationale per domain:
 Cover building-wide and lot-specific issues:
 
 - Structural defects (concrete, waterproofing, roofing, facades, drainage, glazing, services)
-- Lot-specific defects from any source document
-- Hazardous materials — location, risk level, whether a register/management plan exists
 - Building age, construction type, environmental exposure, and deterioration trajectory
 - Status of any remediation works — contracted, in progress, completed, or stalled
+- Hazardous materials — location, risk level, whether a register/management plan exists
+- Lot-specific defects from any source document
 
 Note the age and limitations of each building report relied upon.
 
@@ -128,13 +128,9 @@ List what is missing and why each gap matters. Prioritise by materiality — lea
 
 ### 6. QUESTIONS FOR THE VENDOR
 
-12–15 specific questions targeting identified gaps, risks, or ambiguities. Each should require a factual, verifiable answer and specify documentary evidence where relevant.
+8-12 specific questions targeting identified gaps, risks, or ambiguities. Each should require a factual, verifiable answer and specify documentary evidence where relevant.
 
-### 7. CONTRACT CONDITIONS
-
-6–8 special conditions for the contract of sale, each with a one-sentence explanation of the risk it addresses. Cover at minimum: special levy protection, s184 certificate, building inspection, hazardous materials, vendor warranties, and lot-specific issues.
-
-### 8. PURCHASE RECOMMENDATION AND PRICE GUIDANCE
+### 7. PURCHASE RECOMMENDATION AND PRICE GUIDANCE
 
 **Market Price Estimate (Before Strata Analysis):**
 Estimate what this unit would sell for if the building were well-maintained with no material strata issues, based on comparable sales, local market data, and stated assumptions about the unit (size, bedrooms, parking, views — state what is assumed vs what is known from the documents).
