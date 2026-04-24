@@ -434,6 +434,138 @@ a {
   text-align: right;
 }
 
+/* Sample output block */
+.sample-output {
+  border-left: 4px solid var(--accent, #4a7fa5);
+  background: var(--gutter);
+  border-radius: 0 6px 6px 0;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.sample-output-header {
+  padding: 0.5rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sample-output-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.sample-output-body {
+  padding: 1.4rem 1.8rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.sample-output-body h1,
+.sample-output-body h2,
+.sample-output-body h3,
+.sample-output-body h4 {
+  margin-top: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.sample-output-body h1 { font-size: 1.15rem; }
+.sample-output-body h2 { font-size: 1.05rem; }
+.sample-output-body h3 { font-size: 0.95rem; }
+
+.sample-output-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+.sample-output-body th,
+.sample-output-body td {
+  text-align: left;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+}
+
+.sample-output-body th {
+  background: var(--border);
+  font-weight: 600;
+}
+
+.sample-output-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+/* Copy prompt block */
+.copy-prompt {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.copy-prompt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--border);
+  padding: 0.5rem 1rem;
+}
+
+.copy-prompt-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.copy-prompt-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.copy-prompt-btn:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.copy-prompt-btn.copied {
+  background: #2a7a2a;
+  color: #fff;
+  border-color: #2a7a2a;
+}
+
+.copy-prompt-body {
+  background: var(--gutter);
+  padding: 1.2rem 1.5rem;
+  margin: 0;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  border: none;
+  border-radius: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.copy-prompt-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--text);
+  white-space: pre;
+}
+
 /* Code blocks */
 .post-content pre {
   background: var(--gutter);

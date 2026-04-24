@@ -1,0 +1,25 @@
+<div class="copy-prompt">
+  <div class="copy-prompt-header">
+    <span class="copy-prompt-label">LLM Prompt</span>
+    <button class="copy-prompt-btn" aria-label="Copy prompt to clipboard">Cut</button>
+  </div>
+  <pre class="copy-prompt-body"><code>{{ .Inner | htmlUnescape }}</code></pre>
+</div>
+<script>
+(function() {
+  var blocks = document.querySelectorAll('.copy-prompt');
+  var last = blocks[blocks.length - 1];
+  var btn = last.querySelector('.copy-prompt-btn');
+  btn.addEventListener('click', function() {
+    var text = last.querySelector('code').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Cut';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+})();
+</script>
