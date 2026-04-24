@@ -6,18 +6,24 @@ featured_image: "/blog/images/strata-report-buyers.png"
 featured_image_alt: "A concerned couple looking at a pre-sale residential strata report in front of a modern apartment building."
 ---
 
-Everyone says, quite rightly, before you buy into a strata you must obtain (even if you have to pay for it) the strata report.  The wisdom is that, the strata report will provide all you need to make an informed decision about the maintenance of the buildings, its financial situation, and the (dis)harmony of your potential co-owners and neighbours.
+Everyone says, quite rightly, before you buy into a strata you must obtain the strata report, even if you have to pay for it.  The wisdom is that, the strata report will provide all you need to make an informed decision about the maintenance of the buildings, its financial situation, and the (dis)harmony of your potential co-owners and neighbours.
 
-Working against that are many forces which would prefer you execute the purchase without knowing any of those things.  The seller and their real estate agent would prefer you stay in the dark so you don't get cold feet and don't have any ammunition to soften your bid.  The Owners, generally, would prefer you not have a clear view for the same reason; they are conscious that the price you pay will reflect on the valuation of their unit.  And the, supposedly independent, company offering the Strata Report doesn't really want you to discover any gremlins because they want more business from these Real Estate agents and don't want exposure to a lawsuit for putting people off.
+Working against that are many forces which would prefer you execute the purchase without knowing any of those things.  The seller and their real estate agent would prefer you stay in the dark so you don't get cold feet and don't have any ammunition to soften your bid.  The Owners, generally, would prefer you not have a clear view for the same reason; they know that the price you pay will reflect on the valuation of their own unit.  Even the, supposedly independent, company offering the Strata Report doesn't really want you to discover any gremlins because they want more business from these Real Estate agents and don't want exposure to a lawsuit for putting people off.
 
-Oddly enough, it's really only the Strata Manager who doesn't really care, or even inclined that you do know the whole story; so they don't have to endure the outrage of the new owners when negatives become more clear.  But, that motive is not strong enough to overcome the fear of irritating the hands that feed them, so they simply won't talk to you at all.
+Oddly enough, it's only the Strata Manager who doesn't care, or mildly inclined toward you having the full picture: merely so they don't have to listen to your outrage when the negatives become clear.  Sadly even that motive submits to the greater fear of irritating the hands that feed them, so they simply won't take your call.
 
-But we have a modern solution: the LLM (or 'ChatGPT') has no skin in the game (yet) and no motivation to sugar coat it for you.  This is the best way I have discovered to 'read between the lines' of a 'strata report' and get some negative, or objective, feedback.
+So what good is the Strata Report?
+
+Well they do have to include some hard information, or leave it out and put it on you to notice it's missing.  It's like those legal dramas where the cast spend an all-nighter going through all the boxes.  There's stuff in there, you just have to find it. But how?
+
+Enter a modern solution: the LLM (or 'ChatGPT') has no skin in this game (yet) and no motivation to sugar coat it for you.  This is the best way I have discovered to 'read between the lines' of a 'strata report' and extract an objective view of the situation.
 
 1. Get the strata report:
 2. Feed the strata report into an LLM (ie ChatGPT, Claude, Copilot, Grok, llama, etc.) for evaluation.  
 
-The extensive prompt below will generate a comprehensive assessment of the strata report.  You can paste it into Claude (or your LLM of choice), attach the strata report file and add your own prompt simply stating something like "The address is "99 Baker St Cronulla NSW" and the unit number is "6".  The output is insightful and comprehensive but, of course, not as authoritative as it purports... consider what it says with your own judgement and grains of salt.
+The extensive prompt below will generate a comprehensive assessment of the strata report.  You can copy/paste the prompt below into Claude (or your LLM of choice), and attach the strata report file, then type your own prompt simply stating something like `The address is "99 Baker St Cronulla NSW" and the unit number is "6"`.  
+
+The output is insightful and comprehensive but, of course, not as authoritative as it purports... consider what it says with your own judgement and grains of salt.
 
 I thought about setting this up as a "buy me a coffee service".  At first the LLM excitedly told me this was worth $60-$200 per report and to take it beyond coffee.  But then I asked about risks and it told me, yeah, it wasn't worth a lawsuit. 😊
 

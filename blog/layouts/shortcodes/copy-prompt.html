@@ -1,7 +1,7 @@
 <div class="copy-prompt">
   <div class="copy-prompt-header">
     <span class="copy-prompt-label">LLM Prompt</span>
-    <button class="copy-prompt-btn" aria-label="Copy prompt to clipboard">Cut</button>
+    <button class="copy-prompt-btn" aria-label="Copy prompt to clipboard">Copy</button>
   </div>
   <pre class="copy-prompt-body"><code>{{ .Inner | htmlUnescape }}</code></pre>
 </div>
@@ -16,7 +16,7 @@
       btn.textContent = 'Copied!';
       btn.classList.add('copied');
       setTimeout(function() {
-        btn.textContent = 'Cut';
+        btn.textContent = 'Copy';
         btn.classList.remove('copied');
       }, 2000);
     });

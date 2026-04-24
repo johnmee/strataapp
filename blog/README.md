@@ -65,3 +65,15 @@ Build with `hugo` and upload the `public/` directory to your static web host.
 * sell the lot - redevelopment/strata renewal
 * waterproofing - balconies and planters and DAs and CDCs
 * water levies - individual and collective water bills
+* Insurance - many aspects incl:
+ - overall structure and kickbacks
+ - providers
+ - your journey to find a good one
+ - interaction with fire orders
+* How to run committee meetings- “Robert’s rules of order”
+* Tenants vs owners
+* Monthly expenses
+* Strata manager roles, good and bad
+* Diff types of levies
+* Visitor parking woes 
+* Scheduling inside apartment work
