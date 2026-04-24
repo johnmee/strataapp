@@ -1,6 +1,6 @@
 baseURL = 'https://www.strata.properties/blog/'
 languageCode = 'en-us'
-title = 'Strata Properties Blog'
+title = 'Strata Properties Journal'
 
 [params]
-  tagline = 'The daily frustrations of a Strata Owner in NSW Australia, and the fight to build a solution.'
+  tagline = 'The frustrations of a Strata Owner in NSW Australia, and the fight to build a solution.'

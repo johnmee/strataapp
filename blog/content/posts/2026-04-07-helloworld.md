@@ -1,6 +1,7 @@
 ---
 date: 2026-04-07
 title: "Hello, World."
+summary: "The blog and domain are live, the first static pieces are deployed, and the next question is how to turn the mockup into a real application."
 ---
 
 It's up.  The domain is established and both the app and the blog are deploying.

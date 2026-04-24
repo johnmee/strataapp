@@ -1,14 +1,52 @@
 {{ define "main" }}
-  <ul class="post-list">
-    {{ range first 5 (where .Site.RegularPages "Section" "posts") }}
-      <li>
-        <div class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></div>
+  {{ $posts := first 5 (where .Site.RegularPages "Section" "posts") }}
+  {{ $featured := index $posts 0 }}
+
+  <section class="home-hero">
+    <h1>Notes from the strata trenches</h1>
+    <p class="home-intro">First-hand notes from a Strata Committee Chairperson seeking to make ownership more transparent,
+        participatory, manageable, systematic, and less vulnerable to personalities.</p>
+  </section>
+
+  {{ with $featured }}
+    <section class="home-feature">
+      <div class="home-feature-copy">
+        <p class="section-label">Latest article</p>
+        <h2 class="home-feature-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
         <div class="post-meta">{{ .Date.Format "2 January 2006" }}</div>
-        <div class="post-excerpt">
-          {{ .Summary }}
-          <a class="read-more" href="{{ .Permalink }}">Read more &rarr;</a>
-        </div>
-      </li>
-    {{ end }}
-  </ul>
+        <p class="home-feature-summary">{{ .Params.summary | default .Summary | plainify }}</p>
+        <a class="read-more" href="{{ .Permalink }}">Read article &rarr;</a>
+      </div>
+      {{ with .Params.featured_image }}
+        <a class="home-feature-image-link" href="{{ $.Permalink }}">
+          <img class="home-feature-image" src="{{ . }}" alt="{{ $.Params.featured_image_alt | default $.Title }}">
+        </a>
+      {{ end }}
+    </section>
+  {{ end }}
+
+  <section class="home-posts-section">
+    <div class="home-posts-header">
+      <p class="section-label">Recent posts</p>
+    </div>
+    <ul class="post-list post-grid">
+      {{ range after 1 $posts }}
+        <li class="post-card">
+          {{ with .Params.featured_image }}
+            <a class="post-thumbnail-link" href="{{ $.Permalink }}">
+              <img class="post-thumbnail" src="{{ . }}" alt="{{ $.Params.featured_image_alt | default $.Title }}">
+            </a>
+          {{ end }}
+          <div class="post-card-body">
+            <div class="post-meta">{{ .Date.Format "2 January 2006" }}</div>
+            <div class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></div>
+            <div class="post-excerpt">
+              <p>{{ .Params.summary | default .Summary | plainify }}</p>
+            </div>
+            <a class="read-more" href="{{ .Permalink }}">Read more &rarr;</a>
+          </div>
+        </li>
+      {{ end }}
+    </ul>
+  </section>
 {{ end }}

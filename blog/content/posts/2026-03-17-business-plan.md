@@ -1,6 +1,7 @@
 ---
 date: 2026-03-07
 title: "Business Plan"
+summary: "A practical case for owner-first strata software: the core problems, the market gap, and the direction for a product built around transparency and control."
 ---
 
 # Strata. Owner-First.

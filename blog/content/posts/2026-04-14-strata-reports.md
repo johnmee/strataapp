@@ -1,9 +1,10 @@
 ---
 date: 2026-04-14
 title: "The pre-sale Strata Report"
+summary: "A blunt guide to reading a pre-sale strata report with LLM help, including the prompt used to surface risks, omissions, and likely buyer exposure."
+featured_image: "/blog/images/strata-report-buyers.png"
+featured_image_alt: "A concerned couple looking at a pre-sale residential strata report in front of a modern apartment building."
 ---
-
-{{< figure src="/blog/images/strata-report-buyers.png" alt="A worried couple looking at a pre-sale residential strata report in front of a modern apartment building." caption="A worried couple looking at a pre-sale residential strata report in front of a modern apartment building." class="blog-image" >}}
 
 Everyone says, quite rightly, before you buy into a strata you must obtain (even if you have to pay for it) the strata report.  The wisdom is that, the strata report will provide all you need to make an informed decision about the maintenance of the buildings, its financial situation, and the (dis)harmony of your potential co-owners and neighbours.
 

@@ -19,29 +19,39 @@
 
   <body>
     <div class="container">
-        <header>
-            <div class="site-brand">
+        <header class="site-header">
+            <div class="site-header-top">
+              <p class="site-section-label">Journal</p>
+              <div class="site-header-tools">
+                <nav class="site-nav">
+                    <a href="/">App</a>
+                    <a href="{{ "about" | relURL }}">About</a>
+                </nav>
+                <button id="theme-toggle" aria-label="Toggle dark mode">☀︎</button>
+              </div>
+            </div>
+            <div class="site-brand-row">
               <a href="{{ "" | relURL }}" class="site-title-link">
                 <img src="{{ "logo.svg" | absURL }}" alt="{{ .Site.Title }} logo" class="site-logo">
-                {{ .Site.Title }}
+                <span class="site-title-text">{{ .Site.Title }}</span>
               </a>
-              <span class="site-tagline">{{ .Site.Params.tagline }}</span>
+              <p class="site-header-note">Making Strata Better.</p>
             </div>
-            <nav>
-                <a href="/">App</a>
-                <a href="{{ "about" | relURL }}">About</a>
-                <button id="theme-toggle" aria-label="Toggle dark mode">☀︎</button>
-            </nav>
         </header>
 
         <main>
         {{ block "main" . }}{{ end }}
         </main>
 
-        <footer>
-            &copy; {{ now.Year }} {{ .Site.Title }}
-            &nbsp;·&nbsp;
-            <a href="{{ "about#disclaimer" | relURL }}">Disclaimer</a>
+        <footer class="site-footer">
+            <div>
+              <p class="site-footer-title">{{ .Site.Title }}</p>
+              <p class="site-footer-note">{{ .Site.Params.tagline }}</p>
+            </div>
+            <div class="site-footer-meta">
+              <span>&copy; {{ now.Year }}</span>
+              <a href="{{ "about#disclaimer" | relURL }}">Disclaimer</a>
+            </div>
         </footer>
     </div>
 
